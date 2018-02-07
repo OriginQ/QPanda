@@ -14,7 +14,7 @@ export top_dir bin_dir obj_dir
 
 all : mkdir $(sub_dir) 
 
-mkdir : 
+mkdir: 
 	mkdir -p $(bin_dir)
 	mkdir -p $(obj_dir)
 
