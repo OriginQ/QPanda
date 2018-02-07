@@ -608,7 +608,7 @@ bool QCommandSubmit::action(stringstream & ssAction, VirtualQCHttp * mpVirQCHttp
     
     if (!mpVirQCHttp->getAPIKey())
     {
-        cout << "no API key" << endl;
+        cout << "get api key fail" << endl;
         return false;
     }
     string sTaskID;

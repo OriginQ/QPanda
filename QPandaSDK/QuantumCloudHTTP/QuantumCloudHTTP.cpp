@@ -229,7 +229,7 @@ return:      true or false
 *****************************************************************************************************************/
 bool QuantumCloudHTTP::getAPIKey()
 {
-    if (0 == msAPIKey.size())
+    if (0 != msAPIKey.size())
     {
         return false;
     }
