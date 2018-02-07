@@ -5,7 +5,8 @@ VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantumCommandControl", "QuantumCommandControl\QuantumCommandControl.vcxproj", "{1C0193C3-461B-4480-9509-BDE686410A6D}"
 	ProjectSection(ProjectDependencies) = postProject
-		{C0D0BA69-4E08-45CB-9048-0B1A6B75A452} = {C0D0BA69-4E08-45CB-9048-0B1A6B75A452}
+		{FF20AC38-1825-44A7-84E5-530EE5D96A64} = {FF20AC38-1825-44A7-84E5-530EE5D96A64}
+		{FD585478-B722-4B64-B809-601839B2D6F3} = {FD585478-B722-4B64-B809-601839B2D6F3}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QRunesParser", "QRunesParser\QRunesParser.vcxproj", "{C0D0BA69-4E08-45CB-9048-0B1A6B75A452}"
@@ -15,8 +16,15 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantumCloudHTTP", "QuantumCloudHTTP\QuantumCloudHTTP.vcxproj", "{FD585478-B722-4B64-B809-601839B2D6F3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QPandaAPI", "QPandaAPI\QPandaAPI.vcxproj", "{FF20AC38-1825-44A7-84E5-530EE5D96A64}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C0D0BA69-4E08-45CB-9048-0B1A6B75A452} = {C0D0BA69-4E08-45CB-9048-0B1A6B75A452}
+		{CE6019F0-CF00-4E02-842E-DD621C027926} = {CE6019F0-CF00-4E02-842E-DD621C027926}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplication", "ConsoleApplication\ConsoleApplication.vcxproj", "{101B8C05-3B45-4BC1-9378-AA244BBC1343}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1C0193C3-461B-4480-9509-BDE686410A6D} = {1C0193C3-461B-4480-9509-BDE686410A6D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
