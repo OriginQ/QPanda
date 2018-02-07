@@ -2,6 +2,7 @@
 ## 1. QPandaSDK简介
 
 &nbsp;&nbsp;&nbsp;&nbsp;Q-Panda SDK是由本源量子推出的，基于量子云服务的，开源的量子软件开发包。用户可基于此开发包开发在云端执行的量子程序。Q-Panda使用C++语言作为经典宿主语言，支持以QRunes书写的量子语言。
+
 &nbsp;&nbsp;&nbsp;&nbsp;目前，Q-Panda支持本地仿真运行模式和云仿真运行模式，最高可支持到32位。Q-Panda提供了一个可执行的命令行程序，通过指令控制量子程序的加载、运行和读出。另外，Q-Panda提供了一组API，可供用户自行定制功能。
 ## 2. QPandaSDK接口介绍
 - loadFile函数
@@ -110,7 +111,7 @@
 
 ### 量子程序执行系统编译
 
-&nbsp;&nbsp;&nbsp;&nbsp;量子程序执行系统需要使用Visual Studio编译。本系统由于使用了一些公共库，所以只支持64位。量子程序执行系统在编译前需要准备以下环境。
+&nbsp;&nbsp;&nbsp;&nbsp;量子程序执行系统需要使用Visual Studio编译。本系统由于使用了一些公共库，所以只支持64位。量子程序执行系统在编译前需要准备以下环境：
 
 - python 2.7.14
 
@@ -120,7 +121,7 @@
 
 - 设置解决方案平台为x64;
 
-- 依次编译QuantumInstructionHandle、GPUEmulator、QRunesParser、QPandaAPI、QuantumCloudHTTP、QuantumCommandControl库与ConsoleApplication应用程序.
+- 依次编译QuantumInstructionHandle、GPUEmulator、QRunesParser、QPandaAPI、QuantumCloudHTTP、QuantumCommandControl库与ConsoleApplication应用程序。
 
 ## 4. QPandaAPI使用示例
 
@@ -136,17 +137,76 @@
         int    iRepeat   = 100;
         
         QParserSDK::QParserProgram  qParserProg();
-        qParserProg.loadProgram(sFilePath);
+        qParserProg.loadFile(sFilePath);
         qParserProg.setComputeUnit(CPU);
-        qParserProg.runProgram(iRepeat);
-        qParserProg.getQResult(sResult);
-        qParserProg.getQState(sQState);
+        qParserProg.run(iRepeat);
+        qParserProg.getResult(sResult);
+        qParserProg.getQuantumState(sQState);
         
         cout << "result:\n" << sResult << endl;
         cout << "QState:\n" << sQState << endl;
         
         return 0;
     }
+
+## 5. 量子程序执行系统使用示例
+
+&nbsp;&nbsp;&nbsp;&nbsp;使用量子程序执行系统前需要先进行以下步骤：
+
+- 从 http://www.qubitonline.cn/ 获取APIkey；
+
+- 把APIkey保存在文件中，命名文件为key，并把key文件保存在ConfigFile文件夹中；
+
+- 把ConfigFile文件夹复制到ConsoleApplication.exe同一文件夹下；
+
+- 安装DepInstalPackage中python 2.7.14。
+
+&nbsp;&nbsp;&nbsp;&nbsp;量子程序执行系统分为本地仿真运行模式和云仿真运行模式，可在启动程序时使用mode命令选择运行模式。
+
+---
+    ConsoleApplication.exe mode [mode]
+    
+- mode 1 表示使用本地仿真模式；
+- mode 2 表示使用云仿真模式。
+
+### 本地仿真运行模式命令
+
+&nbsp;&nbsp;&nbsp;&nbsp;本地仿真运行模式命令如下所示：
+- load 加载本地量子程序文件
+
+---
+    load [path]
+    
+- run 运行已经加载的量子程序
+
+---
+    run -n [repeat] -gpu -f -o -b
+    -n    重复次数
+    -gpu  选择使用GPU仿真量子计算
+    -f    保存quantum state
+    -o    保存运行结果
+    -b    以2进制的方式保存quantum state
+    
+ ### 云仿真模式
+ 
+ &nbsp;&nbsp;&nbsp;&nbsp;云仿真运行模式命令如下所示：
+ - submit 提交本地量子程序文件
+ 
+---
+    submit [path] -n [repeat]
+    -n    重复次数
+    
+
+- tasklist 获取用户提交的量子程序的TaskID
+- getresult 获取量子程序的运行结果
+
+---
+    getresult [TaskID]
+
+
+
+
+
 
 
 
