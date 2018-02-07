@@ -6,7 +6,7 @@ sub_dir := QPandaAPI\
 
 top_dir = $(PWD)
 
-bin_dir = $(top_dir)/lib
+bin_dir = $(top_dir)/linuxlib
 
 obj_dir = $(top_dir)/obj
 
