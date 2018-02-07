@@ -17,9 +17,9 @@ using std::pair;
 GPUQuantumGates::GPUQuantumGates()
 {
     #ifdef _WIN32
-        mGPUDll = dllLoad("QuantumGPU.dll");
+        mGPUDll = dllLoad("GPUEmulator.dll");
     #elif __linux__
-        mGPUDll = dllLoad("QuantumGPU.so");
+        mGPUDll = dllLoad("GPUEmulator.so");
     #endif
 
     if (NULL == mGPUDll)
