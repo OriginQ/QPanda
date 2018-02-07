@@ -16,7 +16,11 @@ using std::pair;
 
 GPUQuantumGates::GPUQuantumGates()
 {
-    mGPUDll = dllLoad("QuantumGPU.so");
+    #ifdef _WIN32
+        mGPUDll = dllLoad("QuantumGPU.dll");
+    #elif __linux__
+        mGPUDll = dllLoad("QuantumGPU.so");
+    #endif
 
     if (NULL == mGPUDll)
     {
@@ -183,8 +187,8 @@ QError GPUQuantumGates::Hadamard(size_t  qn,
 
 /*****************************************************************************************************************
 Name:        RX
-Description: RX gate,quantum state rotates ¶» by x axis.The matric is:
-             [cos(¶»/2),-i*sin(¶»/2);i*sin(¶»/2),cos(¶»/2)]
+Description: RX gate,quantum state rotates ¬¶√à by x axis.The matric is:
+             [cos(¬¶√à/2),-i*sin(¬¶√à/2);i*sin(¬¶√à/2),cos(¬¶√à/2)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
              theta       rotation angle
              error_rate  the errorrate of the gate
@@ -211,8 +215,8 @@ QError GPUQuantumGates::RX(size_t qn, double theta, double error_rate)
 
 /*****************************************************************************************************************
 Name:        RX
-Description: RX dagger gate,quantum state rotates ¶» by x axis.The matric is:
-             [cos(¶»/2),-i*sin(¶»/2);i*sin(¶»/2),cos(¶»/2)]
+Description: RX dagger gate,quantum state rotates ¬¶√à by x axis.The matric is:
+             [cos(¬¶√à/2),-i*sin(¬¶√à/2);i*sin(¬¶√à/2),cos(¬¶√à/2)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
              theta       rotation angle
              error_rate  the errorrate of the gate
@@ -366,8 +370,8 @@ QError GPUQuantumGates::RY(size_t   qn,
 /*****************************************************************************************************************
 Name:        RY
 
-Description: RY gate,quantum state rotates ¶» by y axis.The matric is
-             [cos(¶»/2),-sin(¶»/2);sin(¶»/2),cos(¶»/2)]
+Description: RY gate,quantum state rotates ¬¶√à by y axis.The matric is
+             [cos(¬¶√à/2),-sin(¬¶√à/2);sin(¬¶√à/2),cos(¬¶√à/2)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
              theta        rotation angle
              error_rate   the errorrate of the gate
@@ -410,8 +414,8 @@ QError GPUQuantumGates::RY(size_t qn, double theta, double error_rate,int iDagge
 
 /*****************************************************************************************************************
 Name:        RZ
-Description: RZ gate,quantum state rotates ¶» by z axis.The matric is
-[1 0;0 exp(i*¶»)]
+Description: RZ gate,quantum state rotates ¬¶√à by z axis.The matric is
+[1 0;0 exp(i*¬¶√à)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
              theta       rotation angle
              error_rate  the errorrate of the gate
@@ -556,8 +560,8 @@ QError GPUQuantumGates::CNOT(size_t  qn_1,
 /*****************************************************************************************************************
 Name:        CR
 Description: CR gate,when control qubit is |0>,goal qubit does not rotate,
-             when control qubit is |1>,goal qubit rotate ¶» by z axis.the matric is:
-             [1 0 0 0;0 1 0 0;0 0 1 0;0 0 0 exp(i*¶»)]
+             when control qubit is |1>,goal qubit rotate ¬¶√à by z axis.the matric is:
+             [1 0 0 0;0 1 0 0;0 0 1 0;0 0 0 exp(i*¬¶√à)]
 Argin:       qn_1        control qubit number
              qn_2        goal qubit number
              theta       roration angle
@@ -607,7 +611,7 @@ QError GPUQuantumGates::CR(size_t  qn_1,
 
 /*****************************************************************************************************************
 Name:        iSWAP
-Description: iSWAP gate,both qubits swap and rotate ¶– by z-axis,the matric is:
+Description: iSWAP gate,both qubits swap and rotate ¬¶√ê by z-axis,the matric is:
 [1 0 0 0;0 0 -i 0;0 -i 0 0;0 0 0 1]
 Argin:       qn_1        first qubit number
              qn_2        second qubit number
@@ -654,7 +658,7 @@ QError GPUQuantumGates::iSWAP(size_t qn_1,
 
 /*****************************************************************************************************************
 Name:        iSWAP
-Description: iSWAP gate,both qubits swap and rotate ¶– by z-axis,the matric is:
+Description: iSWAP gate,both qubits swap and rotate ¬¶√ê by z-axis,the matric is:
              [1 0 0 0;0 0 -i 0;0 -i 0 0;0 0 0 1]
 Argin:       qn_1               first qubit number
              qn_2               second qubit number
@@ -677,7 +681,7 @@ QError GPUQuantumGates::iSWAP(size_t  qn_1,
 
 /*****************************************************************************************************************
 Name:        controlSwap
-Description: iSWAP gate,both qubits swap and rotate ¶– by z-axis,the matric is:
+Description: iSWAP gate,both qubits swap and rotate ¬¶√ê by z-axis,the matric is:
 [1 0 0 0;0 0 -i 0;0 -i 0 0;0 0 0 1]
 Argin:       qn_1        first qubit number
              qn_2        second qubit number
@@ -693,7 +697,7 @@ QError GPUQuantumGates::controlSwap(size_t qn_1, size_t qn_2, size_t qn_3, doubl
 
 /*****************************************************************************************************************
 Name:        sqiSWAP
-Description: sqiSWAP gate,both qubits swap and rotate ¶– by z-axis,the matrix is:
+Description: sqiSWAP gate,both qubits swap and rotate ¬¶√ê by z-axis,the matrix is:
              [1 0 0 0;0 1/sqrt(2) -i/sqrt(2) 0;0 -i/sqrt(2) 1/sqrt(2) 0;0 0 0 1]
 Argin:       qn_1        first qubit number
              qn_2        second qubit number
@@ -741,7 +745,7 @@ QError GPUQuantumGates::sqiSWAP(size_t  qn_1,
 
 /*****************************************************************************************************************
 Name:        sqiSWAP
-Description: sqiSWAP gate,both qubits swap and rotate ¶– by z-axis,the matrix is:
+Description: sqiSWAP gate,both qubits swap and rotate ¬¶√ê by z-axis,the matrix is:
              [1 0 0 0;0 1/sqrt(2) -i/sqrt(2) 0;0 -i/sqrt(2) 1/sqrt(2) 0;0 0 0 1]
 Argin:       qn_1               first qubit number
              qn_2               second qubit number
