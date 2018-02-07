@@ -1,11 +1,12 @@
 # QPandaSDK
 ## 1. QPandaSDK简介
 
-&nbsp;&nbsp;&nbsp;&nbsp;QPandaSDK是由合肥本源量子科技有限公司开发，其作用是模拟量子计算，用户可根据自身需求基于此开发包开发应用程序。使用QPandaSDK开发的应用程序可运行基于QRuneScape量子指令集编写的量子程序。QPandaSDK提供CPU、GPU两种方式模拟量子计算，并提供多个接口方便用户使用。
+&nbsp;&nbsp;&nbsp;&nbsp;Q-Panda SDK是由本源量子推出的，基于量子云服务的，开源的量子软件开发包。用户可基于此开发包开发在云端执行的量子程序。Q-Panda使用C++语言作为经典宿主语言，支持以QRunes书写的量子语言。
+&nbsp;&nbsp;&nbsp;&nbsp;目前，Q-Panda支持本地仿真运行模式和云仿真运行模式，最高可支持到32位。Q-Panda提供了一个可执行的命令行程序，通过指令控制量子程序的加载、运行和读出。另外，Q-Panda提供了一组API，可供用户自行定制功能。
 ## 2. QPandaSDK接口介绍
-- loadfile函数
+- loadFile函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;loadfile函数的作用是加载并解析用户编写的量子程序，如果程序有语法错误则返回loadProgramError，否则返回qErrorNone。其输入参数为需要解析的量子程序的路径。输出参数为解析的量子程序需要解析的量子bit数。
+&nbsp;&nbsp;&nbsp;&nbsp;loadFile函数的作用是加载并解析用户编写的量子程序，如果程序有语法错误则返回loadProgramError，否则返回qErrorNone。其输入参数为需要解析的量子程序的路径。输出参数为解析的量子程序需要解析的量子bit数。
 
 表 2.1 &nbsp;&nbsp;loadFile函数
 ---
@@ -85,11 +86,43 @@
     ************************************************************************/
     QError QParserProgram::getQState(STRING & sState);
     
-## 3. QuantumParserSDK编译介绍
+## 3. QPandaSDK编译介绍
 
-&nbsp;&nbsp;&nbsp;&nbsp;使用QuantumParserSDK需要使用Visual Studio编译。需要依次编译QuantumGPU库、QuantumInstructionHandle库、QRunesParser库、QParserSDK库。
+&nbsp;&nbsp;&nbsp;&nbsp;QPandaSDK分为两个部分：QPandaAPI以及基于QPandaAPI搭建的量子程序执行系统。
 
-## 4. QuantumParserSDK使用示例
+### QPandaAPI编译
+
+&nbsp;&nbsp;&nbsp;&nbsp;QPandaAPI可使用makefile编译和Visual Studio编译。
+
+- makefile编译
+
+&nbsp;&nbsp;&nbsp;&nbsp;使用makefile编译比较简单，直接执行make命令即可。在此之前用户需要验证本机是否已经安装cuda，如果未安装则无法使用GPUEmulator库。
+
+- Visual Studio编译
+
+&nbsp;&nbsp;&nbsp;&nbsp;使用Visual Studio编译主要分为以下几步：
+
+- 创建解决方案；
+
+- 加载QPandaAPI、QRunesParser、QuantumInstructionHandle、GPUEmulator子项目；
+
+- 分别编译QuantumInstructionHandle、GPUEmulator、QRunesParser、QPandaAPI，顺序从前向后。
+
+### 量子程序执行系统编译
+
+&nbsp;&nbsp;&nbsp;&nbsp;量子程序执行系统需要使用Visual Studio编译。本系统由于使用了一些公共库，所以只支持64位。量子程序执行系统在编译前需要准备以下环境。
+
+- python 2.7.14
+
+&nbsp;&nbsp;&nbsp;&nbsp;量子程序执行系统使用Visual Studio编译分为以下步骤：
+
+- 除ConsoleApplication外，其他项目设置为dll动态链接库;
+
+- 设置解决方案平台为x64;
+
+- 依次编译QuantumInstructionHandle、GPUEmulator、QRunesParser、QPandaAPI、QuantumCloudHTTP、QuantumCommandControl库与ConsoleApplication应用程序.
+
+## 4. QPandaAPI使用示例
 
 表4.1&nbsp;&nbsp;使用示例
 ---
@@ -114,7 +147,6 @@
         
         return 0;
     }
-
 
 
 
