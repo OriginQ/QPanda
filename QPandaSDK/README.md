@@ -1,22 +1,22 @@
-# QuantumParserSDK
-## 1. QuantumParserSDK简介
+# QPandaSDK
+## 1. QPandaSDK简介
 
-&nbsp;&nbsp;&nbsp;&nbsp;QuantumParserSDK是由合肥本源量子科技有限公司开发，其作用是模拟量子计算，用户可根据自身需求基于此开发包开发应用程序。使用QuantumParserSDK开发的应用程序可运行基于QRuneScape量子指令集编写的量子程序。QuantumParserSDK提供CPU、GPU两种方式模拟量子计算，并提供多个接口方便用户使用。
-## 2. QuantumParserSDK接口介绍
+&nbsp;&nbsp;&nbsp;&nbsp;QPandaSDK是由合肥本源量子科技有限公司开发，其作用是模拟量子计算，用户可根据自身需求基于此开发包开发应用程序。使用QPandaSDK开发的应用程序可运行基于QRuneScape量子指令集编写的量子程序。QPandaSDK提供CPU、GPU两种方式模拟量子计算，并提供多个接口方便用户使用。
+## 2. QPandaSDK接口介绍
 - loadfile函数
 
 &nbsp;&nbsp;&nbsp;&nbsp;loadfile函数的作用是加载并解析用户编写的量子程序，如果程序有语法错误则返回loadProgramError，否则返回qErrorNone。其输入参数为需要解析的量子程序的路径。输出参数为解析的量子程序需要解析的量子bit数。
 
-表 2.1 &nbsp;&nbsp;loadfile函数
+表 2.1 &nbsp;&nbsp;loadFile函数
 ---
     /*************************************************************************
-    Name:        loadfile
+    Name:        loadFile
     Description: load quantum program
     Argin:       sFilePath：quantum program file path
     Argout:      Qnum      ：    quantum bit num
     return:      qerror
     *************************************************************************/
-    QError loadfile(const string &sFilePath,int &Qnum);
+    QError loadFile(const string &sFilePath,int &Qnum);
 
 - setComputeUnit函数
 
