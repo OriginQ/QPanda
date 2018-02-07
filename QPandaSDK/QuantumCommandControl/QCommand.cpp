@@ -603,7 +603,7 @@ bool QCommandSubmit::action(stringstream & ssAction, VirtualQCHttp * mpVirQCHttp
         sFilePath.append(vsCommand[i-1]);
     }
 
-    string sKeyPath = "./key";
+    string sKeyPath = "./ConfigFile/key";
     mpVirQCHttp = createQCHttp(sKeyPath);
     
     if (!mpVirQCHttp->getAPIKey())
@@ -723,7 +723,7 @@ bool QCommandGetResult::action(stringstream & ssAction, VirtualQCHttp * mpVirQCH
 
     if (nullptr == mpVirQCHttp)
     {
-        string sKeyPath = "./key";
+        string sKeyPath = "./ConfigFile/key";
         mpVirQCHttp = createQCHttp(sKeyPath);
     
         if (!mpVirQCHttp->getAPIKey())
