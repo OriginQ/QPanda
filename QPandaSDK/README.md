@@ -22,7 +22,7 @@
 
 - setComputeUnit函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;setComputeUnit函数的作用是设置使用哪种方式模拟量子计算，用户有两种选择：CPU模式和GPU模式。如果设置失败则返回setComputeError，否则返回qErrorNone。函数的输入参数为需要计算单元类型。
+&nbsp;&nbsp;&nbsp;&nbsp;setComputeUnit函数的作用是设置使用哪种方式模拟量子计算，用户有两种选择：CPU模式和GPU模式。如果设置失败则返回setComputeError，否则返回qErrorNone。函数的输入参数为计算单元的类型。
 
 
 
@@ -57,7 +57,7 @@
     
 - getResult函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;getResult函数的作用是获取量子程序的运行结果。如果获取不成功则返回getResultError，否则返回qErrorNone。函数的输出参数为运行后的结果。
+&nbsp;&nbsp;&nbsp;&nbsp;getResult函数的作用是获取量子程序的运行结果。如果获取不成功则返回getResultError，否则返回qErrorNone。函数的输入参数为运行后的结果。
 
 
 表2.4&nbsp;&nbsp;getResult函数  
@@ -73,7 +73,7 @@
     
 - getQuantumState函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;getQuantumState函数的作用是获取量子程序运行后的整个量子体系所有分量的复振幅。如果获取不成功返回getQStateError，否则返回qErrorNone。函数的输出参数为string类型的所有分量的复振幅。
+&nbsp;&nbsp;&nbsp;&nbsp;getQuantumState函数的作用是获取量子程序运行后的整个量子体系所有分量的复振幅。如果获取不成功返回getQStateError，否则返回qErrorNone。函数的输入参数为string类型的所有分量的复振幅。
 
 
 表2.5&nbsp;&nbsp;getQuantumState函数  
