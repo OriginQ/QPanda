@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<help>
+  <class name="checkCUDA">
+    <Des language="English">
+      <line>checkCUDA: check CUDA</line>
+      <line>example  : checkCUDA</line>
+    </Des>
+    <Des language="Chinese">
+      checkCUDA:检测CUDA\n
+      示例: checkCUDA\n
+    </Des>
+  </class>
+  <class name="memory">
+    <Des language="English">
+      <line>memory: get free memory</line>
+      <line>example: memory</line>
+    </Des>
+    <Des language="Chinese">
+      <line>memory: 获取剩余内存</line>
+      <line>示例: memory</line>
+    </Des>
+  </class>
+  <class name="mode">
+    <Des language="English">
+      <line>mode: Select the execution mode of the quantum program</line>
+      <line>mode [mode]</line>
+      <line>     mode : The type of execution mode </line>
+      <line>     1 :    Local simulation           </line>
+      <line>     2 :    Cloud platform             </line>
+      <line>     3 :    Quantum processor          </line>
+      <line>example : mode 1</line>
+    </Des>
+    <Des language="Chinese">
+      <line>mode: 选择执行量子程序的模式</line>
+      <line>mode [mode]</line>
+      <line>     mode : 执行模式 </line>
+      <line>     1 :    本地模拟模式            </line>
+      <line>     2 :    云平台模式              </line>
+      <line>     3 :    量子芯片模式            </line>
+      <line>示例 : mode 1</line>
+    </Des>
+  </class>
+  <class name="load">
+    <Des language="English">
+      <line>load: Load quantum program txt</line>
+      <line>load [path]</line>
+      <line>     path : Path to quantum program text</line>
+      <line>example : load E://hello.txt</line>
+    </Des>
+    <Des language="Chinese">
+      <line>load: 加载量子程序文本</line>
+      <line>load [path]</line>
+      <line>     path : 量子程序文本路径</line>
+      <line>示例 : load E://hello.txt</line>
+    </Des>
+  </class>
+  <class name="run">
+    <Des language="English">
+      <line>run: Execute the quantum program</line>
+	  <line>run: -gpu</line>
+	  <line>run: -n [repeat]</line>
+	  <line>run: -f</line>
+	  <line>run: -o</line>
+	  <line>run: -b</line>
+      <line>example: run</line>
+    </Des>
+    <Des language="Chinese">
+      <line>run: 执行量子程序</line>
+      <line>示例: run</line>
+    </Des>
+  </class>
+  <class name="exit">
+    <Des language="English">
+      <line>exit: exit program</line>
+      <line>example: exit</line>
+    </Des>
+    <Des language="Chinese">
+      <line>exit: 退出程序</line>
+      <line>示例: exit</line>
+    </Des>
+  </class>
+  <class name="submit">
+    <Des language="English">
+      <line>submit: submit quantum program</line>
+      <line>submit [path] -n [repeat]</line>
+	  <line>example: submit test.txt -n 100</line>
+    </Des>
+    <Des language="Chinese">
+      <line>submit: 提交量子程序</line>
+      <line>submit [路径] -n [重复次数]</line>
+	  <line>示例：submit test.txt -n 100</line>
+    </Des>
+  </class>
+  <class name="tasklist">
+    <Des language="English">
+      <line>tasklist: show taskid</line>
+	  <line>example: tasklist</line>
+    </Des>
+    <Des language="Chinese">
+      <line>tasklist: 显示taskid</line>
+	  <line>示例：tasklist</line>
+    </Des>
+  </class>
+  <class name="getresult">
+    <Des language="English">
+      <line>getresult: get quantum program result</line>
+	  <line>getresult [TaskID]</line>
+	  <line>example: getresult 18020152145</line>
+    </Des>
+    <Des language="Chinese">
+      <line>getresult: 获取量子程序的结果</line>
+	  <line>getresult [TaskID]</line>
+	  <line>示例：getresult 18020152145 </line>
+    </Des>
+  </class>
+</help>  
