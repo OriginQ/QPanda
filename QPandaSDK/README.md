@@ -182,8 +182,8 @@
 ---
     run -n [repeat] -gpu -f -o -b
     -n    重复次数
-    -gpu  选择使用GPU仿真量子计算
-    -f    保存quantum state
+    -gpu  选择使用GPU仿真量子计算（不使用此命令时，默认选择使用CPU仿真量子计算）
+    -f    保存quantum state
     -o    保存运行结果
     -b    以2进制的方式保存quantum state
     
