@@ -153,7 +153,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;使用量子程序执行系统前需要先进行以下步骤：
 
-- 从 http://www.qubitonline.cn/ 获取APIkey；
+- 从 http://www.qubitonline.cn/ 中注册并获取APIkey；
 
 - 把APIkey保存在文件中，命名文件为key，并把key文件保存在ConfigFile文件夹中；
 
