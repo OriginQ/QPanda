@@ -22,7 +22,7 @@
 
 - setComputeUnit函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;setComputeUnit函数的作用是设置使用哪种方式模拟量子计算，用户有两种选择：CPU模式和GPU模式。如果设置失败则返回setComputeError，否则返回qErrorNone。函数的输入参数为需要计算单元类型。
+&nbsp;&nbsp;&nbsp;&nbsp;setComputeUnit函数的作用是设置使用哪种方式模拟量子计算，用户有两种选择：CPU模式和GPU模式。如果设置失败则返回setComputeError，否则返回qErrorNone。函数的输入参数为计算单元的类型。
 
 
 
@@ -57,7 +57,7 @@
     
 - getResult函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;getResult函数的作用是获取量子程序的运行结果。如果获取不成功则返回getResultError，否则返回qErrorNone。函数的输出参数为运行后的结果。
+&nbsp;&nbsp;&nbsp;&nbsp;getResult函数的作用是获取量子程序的运行结果。如果获取不成功则返回getResultError，否则返回qErrorNone。函数的输入参数为运行后的结果。
 
 
 表2.4&nbsp;&nbsp;getResult函数  
@@ -73,7 +73,7 @@
     
 - getQuantumState函数
 
-&nbsp;&nbsp;&nbsp;&nbsp;getQuantumState函数的作用是获取量子程序运行后的整个量子体系所有分量的复振幅。如果获取不成功返回getQStateError，否则返回qErrorNone。函数的输出参数为string类型的所有分量的复振幅。
+&nbsp;&nbsp;&nbsp;&nbsp;getQuantumState函数的作用是获取量子程序运行后的整个量子体系所有分量的复振幅。如果获取不成功返回getQStateError，否则返回qErrorNone。函数的输入参数为string类型的所有分量的复振幅。
 
 
 表2.5&nbsp;&nbsp;getQuantumState函数  
@@ -153,7 +153,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;使用量子程序执行系统前需要先进行以下步骤：
 
-- 从 http://www.qubitonline.cn/ 获取APIkey；
+- 从 http://www.qubitonline.cn/ 中注册并获取APIkey；
 
 - 把APIkey保存在文件中，命名文件为key，并把key文件保存在ConfigFile文件夹中；
 
@@ -182,7 +182,7 @@
 ---
     run -n [repeat] -gpu -f -o -b
     -n    重复次数
-    -gpu  选择使用GPU仿真量子计算
+    -gpu  选择使用GPU仿真量子计算（不使用此命令时，默认选择CPU模式仿真量子计算）
     -f    保存quantum state
     -o    保存运行结果
     -b    以2进制的方式保存quantum state
