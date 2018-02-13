@@ -1,6 +1,6 @@
 ﻿# Q-Panda
 
-![Q-Panda Logo](/img/QPanda Logo.jpg)
+![Q-Panda Logo](/img/Q_Panda_logo.png)
 
 Q-Panda SDK是由本源量子推出的，基于量子云服务的，开源的量子软件开发包。用户可基于此开发包开发在云端执行的量子程序。Q-Panda使用C++语言作为经典宿主语言，支持以QRunes书写的量子语言。
 
