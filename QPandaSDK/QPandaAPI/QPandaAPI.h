@@ -29,6 +29,7 @@ namespace QPanda
 #define MEASURE    1
 #define PMEASURE   2
 #define PAIR       pair<string,double>
+
 class DLL_EXPORTS_API QPandaAPI 
 {
 public:
