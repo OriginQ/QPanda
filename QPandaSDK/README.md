@@ -203,7 +203,13 @@
 ---
     getresult [TaskID]
 
+## 6. 使用Python调用QPandaAPI类
 
+- 在QPandaSDK文件夹下执行make命令，生成libQRunesParser.so、libQuantumInstructionHandle.so动态库；
+
+- 在QPandaAPI文件夹下执行make -f Makefile.QPandaAPI-swig命令，生成_QPandaAPI.so库；
+
+- 复制QPandaAPI.py到linuxlib文件夹下。 
 
 
 
