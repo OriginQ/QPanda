@@ -1,6 +1,6 @@
 cc       = g++ -std=c++11
 CCFLAGS  = -Wall -g -fopenmp
-prom     = QuantumInstructionHandle.a
+prom     = libQuantumInstructionHandle.so
 TASKPATH = .
 head     = $(shell find $(TASKPATH)/ -name "*.h")
 src      = $(shell find $(TASKPATH)/ -name "*.cpp")
@@ -9,10 +9,10 @@ org      = $(src:%.cpp=%.o)
 all: $(prom)
 
 $(prom): $(org)
-	ar r $(bin_dir)/$@ $^ 
+	$(cc) -shared -fPIC -o $(bin_dir)/$@ $^ 
 
 $(org): $(src)
-	$(cc) -c $(CCFLAGS) $^ 
+	$(cc) -c -fPIC $(CCFLAGS) $^ 
 
 clean:
 	-rm -rf $(TASKPATH)/*.o
