@@ -1,6 +1,6 @@
-sub_dir := QPandaAPI\
-	       QRunesParser \
+sub_dir := QRunesParser \
 		   QuantumInstructionHandle \
+		   QPandaAPI\
 		   GPUEmulator		   
 
 
