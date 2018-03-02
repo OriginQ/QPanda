@@ -663,7 +663,7 @@ bool qubitMeasure::getInstruction(QNode            *pQInstructionNode,
 
         pQuantumProParam->mReturnValue.insert(pair<size_t,int>(pMeasure->creg, Result));
     }
-
+    
     return true;;
 }
 

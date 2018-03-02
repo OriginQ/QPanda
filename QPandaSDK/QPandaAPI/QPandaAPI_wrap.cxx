@@ -3006,14 +3006,12 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_QError swig_types[0]
-#define SWIGTYPE_p_QPanda__QPandaAPI swig_types[1]
-#define SWIGTYPE_p_char swig_types[2]
-#define SWIGTYPE_p_int swig_types[3]
-#define SWIGTYPE_p_std__string swig_types[4]
-#define SWIGTYPE_p_string swig_types[5]
-static swig_type_info *swig_types[7];
-static swig_module_info swig_module = {swig_types, 6, 0, 0, 0, 0};
+#define SWIGTYPE_p_QPanda__QPandaAPI swig_types[0]
+#define SWIGTYPE_p_char swig_types[1]
+#define SWIGTYPE_p_int swig_types[2]
+#define SWIGTYPE_p_intp swig_types[3]
+static swig_type_info *swig_types[5];
+static swig_module_info swig_module = {swig_types, 4, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3118,15 +3116,17 @@ namespace swig {
 }
 
 
-#include "QPandaAPI.h"
+#include <string>
 
 
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
-}
+typedef int intp;
 
+SWIGINTERN intp *new_intp(){
+    return (new int);
+  }
+SWIGINTERN void delete_intp(intp *self){
+    if (self) delete self;
+  }
 
 #include <limits.h>
 #if !defined(SWIG_NO_LLONG_MAX)
@@ -3278,9 +3278,344 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   return res;
 }
 
+SWIGINTERN void intp_assign(intp *self,int value){
+    *self = value;
+  }
+SWIGINTERN int intp_value(intp *self){
+    return *self;
+  }
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_int  (int value)
+{
+  return PyInt_FromLong((long) value);
+}
+
+SWIGINTERN int *intp_cast(intp *self){
+    return self;
+  }
+SWIGINTERN intp *intp_frompointer(int *t){
+    return (intp *) t;
+  }
+
+#include "QPandaAPI.h"
+
+
+
+SWIGINTERN swig_type_info*
+SWIG_pchar_descriptor(void)
+{
+  static int init = 0;
+  static swig_type_info* info = 0;
+  if (!init) {
+    info = SWIG_TypeQuery("_p_char");
+    init = 1;
+  }
+  return info;
+}
+
+
+SWIGINTERN int
+SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
+{
+#if PY_VERSION_HEX>=0x03000000
+  if (PyUnicode_Check(obj))
+#else  
+  if (PyString_Check(obj))
+#endif
+  {
+    char *cstr; Py_ssize_t len;
+#if PY_VERSION_HEX>=0x03000000
+    if (!alloc && cptr) {
+        /* We can't allow converting without allocation, since the internal
+           representation of string in Python 3 is UCS-2/UCS-4 but we require
+           a UTF-8 representation.
+           TODO(bhy) More detailed explanation */
+        return SWIG_RuntimeError;
+    }
+    obj = PyUnicode_AsUTF8String(obj);
+    PyBytes_AsStringAndSize(obj, &cstr, &len);
+    if(alloc) *alloc = SWIG_NEWOBJ;
+#else
+    PyString_AsStringAndSize(obj, &cstr, &len);
+#endif
+    if (cptr) {
+      if (alloc) {
+	/* 
+	   In python the user should not be able to modify the inner
+	   string representation. To warranty that, if you define
+	   SWIG_PYTHON_SAFE_CSTRINGS, a new/copy of the python string
+	   buffer is always returned.
+
+	   The default behavior is just to return the pointer value,
+	   so, be careful.
+	*/ 
+#if defined(SWIG_PYTHON_SAFE_CSTRINGS)
+	if (*alloc != SWIG_OLDOBJ) 
+#else
+	if (*alloc == SWIG_NEWOBJ) 
+#endif
+	{
+	  *cptr = reinterpret_cast< char* >(memcpy((new char[len + 1]), cstr, sizeof(char)*(len + 1)));
+	  *alloc = SWIG_NEWOBJ;
+	} else {
+	  *cptr = cstr;
+	  *alloc = SWIG_OLDOBJ;
+	}
+      } else {
+	#if PY_VERSION_HEX>=0x03000000
+	assert(0); /* Should never reach here in Python 3 */
+	#endif
+	*cptr = SWIG_Python_str_AsChar(obj);
+      }
+    }
+    if (psize) *psize = len + 1;
+#if PY_VERSION_HEX>=0x03000000
+    Py_XDECREF(obj);
+#endif
+    return SWIG_OK;
+  } else {
+#if defined(SWIG_PYTHON_2_UNICODE)
+#if PY_VERSION_HEX<0x03000000
+    if (PyUnicode_Check(obj)) {
+      char *cstr; Py_ssize_t len;
+      if (!alloc && cptr) {
+        return SWIG_RuntimeError;
+      }
+      obj = PyUnicode_AsUTF8String(obj);
+      if (PyString_AsStringAndSize(obj, &cstr, &len) != -1) {
+        if (cptr) {
+          if (alloc) *alloc = SWIG_NEWOBJ;
+          *cptr = reinterpret_cast< char* >(memcpy((new char[len + 1]), cstr, sizeof(char)*(len + 1)));
+        }
+        if (psize) *psize = len + 1;
+
+        Py_XDECREF(obj);
+        return SWIG_OK;
+      } else {
+        Py_XDECREF(obj);
+      }
+    }
+#endif
+#endif
+
+    swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+    if (pchar_descriptor) {
+      void* vptr = 0;
+      if (SWIG_ConvertPtr(obj, &vptr, pchar_descriptor, 0) == SWIG_OK) {
+	if (cptr) *cptr = (char *) vptr;
+	if (psize) *psize = vptr ? (strlen((char *)vptr) + 1) : 0;
+	if (alloc) *alloc = SWIG_OLDOBJ;
+	return SWIG_OK;
+      }
+    }
+  }
+  return SWIG_TypeError;
+}
+
+
+SWIGINTERN int
+SWIG_AsPtr_std_string (PyObject * obj, std::string **val) 
+{
+  char* buf = 0 ; size_t size = 0; int alloc = SWIG_OLDOBJ;
+  if (SWIG_IsOK((SWIG_AsCharPtrAndSize(obj, &buf, &size, &alloc)))) {
+    if (buf) {
+      if (val) *val = new std::string(buf, size - 1);
+      if (alloc == SWIG_NEWOBJ) delete[] buf;
+      return SWIG_NEWOBJ;
+    } else {
+      if (val) *val = 0;
+      return SWIG_OLDOBJ;
+    }
+  } else {
+    static int init = 0;
+    static swig_type_info* descriptor = 0;
+    if (!init) {
+      descriptor = SWIG_TypeQuery("std::string" " *");
+      init = 1;
+    }
+    if (descriptor) {
+      std::string *vptr;
+      int res = SWIG_ConvertPtr(obj, (void**)&vptr, descriptor, 0);
+      if (SWIG_IsOK(res) && val) *val = vptr;
+      return res;
+    }
+  }
+  return SWIG_ERROR;
+}
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  if (carray) {
+    if (size > INT_MAX) {
+      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+      return pchar_descriptor ? 
+	SWIG_InternalNewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
+    } else {
+#if PY_VERSION_HEX >= 0x03000000
+#if PY_VERSION_HEX >= 0x03010000
+      return PyUnicode_DecodeUTF8(carray, static_cast< Py_ssize_t >(size), "surrogateescape");
+#else
+      return PyUnicode_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#endif
+#else
+      return PyString_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#endif
+    }
+  } else {
+    return SWIG_Py_Void();
+  }
+}
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_std_string  (const std::string& s)
+{
+  return SWIG_FromCharPtrAndSize(s.data(), s.size());
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+SWIGINTERN PyObject *_wrap_new_intp(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intp *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_intp")) SWIG_fail;
+  result = (intp *)new_intp();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_intp, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_intp(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intp *arg1 = (intp *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_intp",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intp, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_intp" "', argument " "1"" of type '" "intp *""'"); 
+  }
+  arg1 = reinterpret_cast< intp * >(argp1);
+  delete_intp(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intp_assign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intp *arg1 = (intp *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:intp_assign",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intp, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intp_assign" "', argument " "1"" of type '" "intp *""'"); 
+  }
+  arg1 = reinterpret_cast< intp * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "intp_assign" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  intp_assign(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intp_value(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intp *arg1 = (intp *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intp_value",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intp, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intp_value" "', argument " "1"" of type '" "intp *""'"); 
+  }
+  arg1 = reinterpret_cast< intp * >(argp1);
+  result = (int)intp_value(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intp_cast(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  intp *arg1 = (intp *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intp_cast",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_intp, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intp_cast" "', argument " "1"" of type '" "intp *""'"); 
+  }
+  arg1 = reinterpret_cast< intp * >(argp1);
+  result = (int *)intp_cast(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intp_frompointer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *arg1 = (int *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  intp *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intp_frompointer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intp_frompointer" "', argument " "1"" of type '" "int *""'"); 
+  }
+  arg1 = reinterpret_cast< int * >(argp1);
+  result = (intp *)intp_frompointer(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_intp, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *intp_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_intp, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *CPU_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *module;
   PyObject *d;
@@ -3328,11 +3663,10 @@ SWIGINTERN PyObject *PMEASURE_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObj
 SWIGINTERN PyObject *_wrap_QPandaAPI_msFileName_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   QPanda::QPandaAPI *arg1 = (QPanda::QPandaAPI *) 0 ;
-  std::string arg2 ;
+  std::string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
@@ -3343,22 +3677,22 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_msFileName_set(PyObject *SWIGUNUSEDPARM(sel
   }
   arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
   {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_std__string,  0  | 0);
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(obj1, &ptr);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_msFileName_set" "', argument " "2"" of type '" "std::string""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_msFileName_set" "', argument " "2"" of type '" "std::string""'");
-    } else {
-      std::string * temp = reinterpret_cast< std::string * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_msFileName_set" "', argument " "2"" of type '" "std::string const &""'"); 
     }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_msFileName_set" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
   }
-  if (arg1) (arg1)->msFileName = arg2;
+  if (arg1) (arg1)->msFileName = *arg2;
   resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -3369,7 +3703,7 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_msFileName_get(PyObject *SWIGUNUSEDPARM(sel
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  std::string result;
+  std::string *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:QPandaAPI_msFileName_get",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_QPanda__QPandaAPI, 0 |  0 );
@@ -3377,8 +3711,126 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_msFileName_get(PyObject *SWIGUNUSEDPARM(sel
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_msFileName_get" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
   }
   arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
-  result =  ((arg1)->msFileName);
-  resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
+  result = (std::string *) & ((arg1)->msFileName);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_QPandaAPI_msResult_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  QPanda::QPandaAPI *arg1 = (QPanda::QPandaAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:QPandaAPI_msResult_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_QPanda__QPandaAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_msResult_set" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(obj1, &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_msResult_set" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_msResult_set" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  if (arg1) (arg1)->msResult = *arg2;
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_QPandaAPI_msResult_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  QPanda::QPandaAPI *arg1 = (QPanda::QPandaAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  std::string *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:QPandaAPI_msResult_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_QPanda__QPandaAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_msResult_get" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
+  result = (std::string *) & ((arg1)->msResult);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_QPandaAPI_msState_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  QPanda::QPandaAPI *arg1 = (QPanda::QPandaAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:QPandaAPI_msState_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_QPanda__QPandaAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_msState_set" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(obj1, &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_msState_set" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_msState_set" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  if (arg1) (arg1)->msState = *arg2;
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_QPandaAPI_msState_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  QPanda::QPandaAPI *arg1 = (QPanda::QPandaAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  std::string *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:QPandaAPI_msState_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_QPanda__QPandaAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_msState_get" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
+  result = (std::string *) & ((arg1)->msState);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(*result));
   return resultobj;
 fail:
   return NULL;
@@ -3426,8 +3878,7 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_loadFile(PyObject *SWIGUNUSEDPARM(self), Py
   int *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
   void *argp3 = 0 ;
   int res3 = 0 ;
   PyObject * obj0 = 0 ;
@@ -3441,14 +3892,17 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_loadFile(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_loadFile" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
   }
   arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_string,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_loadFile" "', argument " "2"" of type '" "string const &""'"); 
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(obj1, &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_loadFile" "', argument " "2"" of type '" "string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_loadFile" "', argument " "2"" of type '" "string const &""'"); 
+    }
+    arg2 = ptr;
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_loadFile" "', argument " "2"" of type '" "string const &""'"); 
-  }
-  arg2 = reinterpret_cast< string * >(argp2);
   res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_int,  0 );
   if (!SWIG_IsOK(res3)) {
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "QPandaAPI_loadFile" "', argument " "3"" of type '" "int &""'"); 
@@ -3457,10 +3911,12 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_loadFile(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_loadFile" "', argument " "3"" of type '" "int &""'"); 
   }
   arg3 = reinterpret_cast< int * >(argp3);
-  result = (arg1)->loadFile((string const &)*arg2,*arg3);
-  resultobj = SWIG_NewPointerObj((new QError(static_cast< const QError& >(result))), SWIGTYPE_p_QError, SWIG_POINTER_OWN |  0 );
+  result = (QError)(arg1)->loadFile((string const &)*arg2,*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -3488,8 +3944,8 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_setComputeUnit(PyObject *SWIGUNUSEDPARM(sel
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "QPandaAPI_setComputeUnit" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
-  result = (arg1)->setComputeUnit(arg2);
-  resultobj = SWIG_NewPointerObj((new QError(static_cast< const QError& >(result))), SWIGTYPE_p_QError, SWIG_POINTER_OWN |  0 );
+  result = (QError)(arg1)->setComputeUnit(arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -3519,8 +3975,8 @@ SWIGINTERN PyObject *_wrap_QPandaAPI_run(PyObject *SWIGUNUSEDPARM(self), PyObjec
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "QPandaAPI_run" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
-  result = (arg1)->run(arg2);
-  resultobj = SWIG_NewPointerObj((new QError(static_cast< const QError& >(result))), SWIGTYPE_p_QError, SWIG_POINTER_OWN |  0 );
+  result = (QError)(arg1)->run(arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -3530,31 +3986,19 @@ fail:
 SWIGINTERN PyObject *_wrap_QPandaAPI_getResult(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   QPanda::QPandaAPI *arg1 = (QPanda::QPandaAPI *) 0 ;
-  std::string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
   QError result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:QPandaAPI_getResult",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:QPandaAPI_getResult",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_QPanda__QPandaAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_getResult" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
   }
   arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_std__string,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_getResult" "', argument " "2"" of type '" "std::string &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_getResult" "', argument " "2"" of type '" "std::string &""'"); 
-  }
-  arg2 = reinterpret_cast< std::string * >(argp2);
-  result = (arg1)->getResult(*arg2);
-  resultobj = SWIG_NewPointerObj((new QError(static_cast< const QError& >(result))), SWIGTYPE_p_QError, SWIG_POINTER_OWN |  0 );
+  result = (QError)(arg1)->getResult();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -3564,31 +4008,19 @@ fail:
 SWIGINTERN PyObject *_wrap_QPandaAPI_getQuantumState(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   QPanda::QPandaAPI *arg1 = (QPanda::QPandaAPI *) 0 ;
-  std::string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
   QError result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:QPandaAPI_getQuantumState",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:QPandaAPI_getQuantumState",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_QPanda__QPandaAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QPandaAPI_getQuantumState" "', argument " "1"" of type '" "QPanda::QPandaAPI *""'"); 
   }
   arg1 = reinterpret_cast< QPanda::QPandaAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_std__string,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QPandaAPI_getQuantumState" "', argument " "2"" of type '" "std::string &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "QPandaAPI_getQuantumState" "', argument " "2"" of type '" "std::string &""'"); 
-  }
-  arg2 = reinterpret_cast< std::string * >(argp2);
-  result = (arg1)->getQuantumState(*arg2);
-  resultobj = SWIG_NewPointerObj((new QError(static_cast< const QError& >(result))), SWIGTYPE_p_QError, SWIG_POINTER_OWN |  0 );
+  result = (QError)(arg1)->getQuantumState();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -3602,14 +4034,146 @@ SWIGINTERN PyObject *QPandaAPI_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *qErrorNone_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "qErrorNone",SWIG_From_int(static_cast< int >(qErrorNone)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *undefineError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "undefineError",SWIG_From_int(static_cast< int >(undefineError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *qParameterError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "qParameterError",SWIG_From_int(static_cast< int >(qParameterError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *qbitError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "qbitError",SWIG_From_int(static_cast< int >(qbitError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *loadFileError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "loadFileError",SWIG_From_int(static_cast< int >(loadFileError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *initStateError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "initStateError",SWIG_From_int(static_cast< int >(initStateError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *destroyStateError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "destroyStateError",SWIG_From_int(static_cast< int >(destroyStateError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *setComputeUnitError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "setComputeUnitError",SWIG_From_int(static_cast< int >(setComputeUnitError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *runProgramError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "runProgramError",SWIG_From_int(static_cast< int >(runProgramError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *getResultError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "getResultError",SWIG_From_int(static_cast< int >(getResultError)));
+  return SWIG_Py_Void();
+}
+
+
+SWIGINTERN PyObject *getQStateError_swigconstant(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *module;
+  PyObject *d;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigconstant", &module)) return NULL;
+  d = PyModule_GetDict(module);
+  if (!d) return NULL;
+  SWIG_Python_SetConstant(d, "getQStateError",SWIG_From_int(static_cast< int >(getQStateError)));
+  return SWIG_Py_Void();
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
+	 { (char *)"new_intp", _wrap_new_intp, METH_VARARGS, NULL},
+	 { (char *)"delete_intp", _wrap_delete_intp, METH_VARARGS, NULL},
+	 { (char *)"intp_assign", _wrap_intp_assign, METH_VARARGS, NULL},
+	 { (char *)"intp_value", _wrap_intp_value, METH_VARARGS, NULL},
+	 { (char *)"intp_cast", _wrap_intp_cast, METH_VARARGS, NULL},
+	 { (char *)"intp_frompointer", _wrap_intp_frompointer, METH_VARARGS, NULL},
+	 { (char *)"intp_swigregister", intp_swigregister, METH_VARARGS, NULL},
 	 { (char *)"CPU_swigconstant", CPU_swigconstant, METH_VARARGS, NULL},
 	 { (char *)"GPU_swigconstant", GPU_swigconstant, METH_VARARGS, NULL},
 	 { (char *)"MEASURE_swigconstant", MEASURE_swigconstant, METH_VARARGS, NULL},
 	 { (char *)"PMEASURE_swigconstant", PMEASURE_swigconstant, METH_VARARGS, NULL},
 	 { (char *)"QPandaAPI_msFileName_set", _wrap_QPandaAPI_msFileName_set, METH_VARARGS, NULL},
 	 { (char *)"QPandaAPI_msFileName_get", _wrap_QPandaAPI_msFileName_get, METH_VARARGS, NULL},
+	 { (char *)"QPandaAPI_msResult_set", _wrap_QPandaAPI_msResult_set, METH_VARARGS, NULL},
+	 { (char *)"QPandaAPI_msResult_get", _wrap_QPandaAPI_msResult_get, METH_VARARGS, NULL},
+	 { (char *)"QPandaAPI_msState_set", _wrap_QPandaAPI_msState_set, METH_VARARGS, NULL},
+	 { (char *)"QPandaAPI_msState_get", _wrap_QPandaAPI_msState_get, METH_VARARGS, NULL},
 	 { (char *)"new_QPandaAPI", _wrap_new_QPandaAPI, METH_VARARGS, NULL},
 	 { (char *)"delete_QPandaAPI", _wrap_delete_QPandaAPI, METH_VARARGS, NULL},
 	 { (char *)"QPandaAPI_loadFile", _wrap_QPandaAPI_loadFile, METH_VARARGS, NULL},
@@ -3618,42 +4182,48 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"QPandaAPI_getResult", _wrap_QPandaAPI_getResult, METH_VARARGS, NULL},
 	 { (char *)"QPandaAPI_getQuantumState", _wrap_QPandaAPI_getQuantumState, METH_VARARGS, NULL},
 	 { (char *)"QPandaAPI_swigregister", QPandaAPI_swigregister, METH_VARARGS, NULL},
+	 { (char *)"qErrorNone_swigconstant", qErrorNone_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"undefineError_swigconstant", undefineError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"qParameterError_swigconstant", qParameterError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"qbitError_swigconstant", qbitError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"loadFileError_swigconstant", loadFileError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"initStateError_swigconstant", initStateError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"destroyStateError_swigconstant", destroyStateError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"setComputeUnitError_swigconstant", setComputeUnitError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"runProgramError_swigconstant", runProgramError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"getResultError_swigconstant", getResultError_swigconstant, METH_VARARGS, NULL},
+	 { (char *)"getQStateError_swigconstant", getQStateError_swigconstant, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static swig_type_info _swigt__p_QError = {"_p_QError", "QError *", 0, 0, (void*)0, 0};
+static void *_p_intpTo_p_int(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((int *)  ((intp *) x));
+}
 static swig_type_info _swigt__p_QPanda__QPandaAPI = {"_p_QPanda__QPandaAPI", "QPanda::QPandaAPI *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__string = {"_p_std__string", "std::string *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_string = {"_p_string", "string *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_intp = {"_p_intp", "intp *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
-  &_swigt__p_QError,
   &_swigt__p_QPanda__QPandaAPI,
   &_swigt__p_char,
   &_swigt__p_int,
-  &_swigt__p_std__string,
-  &_swigt__p_string,
+  &_swigt__p_intp,
 };
 
-static swig_cast_info _swigc__p_QError[] = {  {&_swigt__p_QError, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QPanda__QPandaAPI[] = {  {&_swigt__p_QPanda__QPandaAPI, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_std__string[] = {  {&_swigt__p_std__string, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_string[] = {  {&_swigt__p_string, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_intp, _p_intpTo_p_int, 0, 0},  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_intp[] = {  {&_swigt__p_intp, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
-  _swigc__p_QError,
   _swigc__p_QPanda__QPandaAPI,
   _swigc__p_char,
   _swigc__p_int,
-  _swigc__p_std__string,
-  _swigc__p_string,
+  _swigc__p_intp,
 };
 
 

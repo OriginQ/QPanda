@@ -10,6 +10,7 @@ all: $(prom)
 
 $(prom): $(org)
 	$(cc) -shared -fPIC -o $(bin_dir)/$@ $^ 
+	cp $(bin_dir)/$@ /usr/lib/
 
 $(org): $(src)
 	$(cc) -c -fPIC $(CCFLAGS) $^ 

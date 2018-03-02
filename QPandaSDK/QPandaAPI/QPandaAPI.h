@@ -30,10 +30,12 @@ namespace QPanda
 #define PMEASURE   2
 #define PAIR       pair<string,double>
 
-class DLL_EXPORTS_API QPandaAPI 
+class  QPandaAPI 
 {
 public:
     STRING                        msFileName;                           /* file name                            */
+    STRING                        msResult;
+    STRING                        msState;
     QPandaAPI();
     ~QPandaAPI();
     /*************************************************************************************************************
@@ -68,22 +70,20 @@ public:
     Name:        getResult
     Description: get quantum program result
     Argin:       None
-    Argout:      sResult   result string
     return:      qerror
     *************************************************************************************************************/
-    QError getResult(STRING & sResult);
+    QError getResult();
 
     /*************************************************************************************************************
     Name:        getQuantumState
     Description: get quantum program qstate
     Argin:       None
-    Argout:      sState   state string
     return:      qerror
     *************************************************************************************************************/
-    QError getQuantumState(STRING & sState);
+    QError getQuantumState();
 
  private:
-    map<string,double>            mQReusltMap;                          /* quantum program result map           */
+    map<string,double>            mQResultMap;                          /* quantum program result map           */
     QList                         mQList;
     bool                          mbIsRead = false;                     /* is read quantum program file         */
     QuantumGateParam              mQGatesParam;

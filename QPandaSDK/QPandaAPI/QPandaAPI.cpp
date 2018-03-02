@@ -123,8 +123,8 @@ QError QPandaAPI::run(int iRepeat)
      */
     mQGatesParam.mPMeasure.clear();
     mQGatesParam.mReturnValue.clear();
-    mQReusltMap.clear();
-
+    mQResultMap.clear();
+    msResult.clear();
     if (!mbIsRun)                                                       /* run the program for the first time   */
     {
         if (!mQHandle.initState(&mQGatesParam))
@@ -159,8 +159,8 @@ QError QPandaAPI::run(int iRepeat)
             countState();
         }
 
-        for (auto aiter = mQReusltMap.begin();
-             aiter !=mQReusltMap.end();
+        for (auto aiter = mQResultMap.begin();
+             aiter !=mQResultMap.end();
              aiter++)
         {
             aiter->second = (aiter->second / iRepeat);
@@ -175,12 +175,12 @@ QError QPandaAPI::run(int iRepeat)
         for (auto aiter : mQGatesParam.mPMeasure)
         {
             integerToBinary(aiter.first, ssResult, mQGatesParam.mPMeasureSize);
-            mQReusltMap.insert(PAIR(ssResult.str(), aiter.second));
+            mQResultMap.insert(PAIR(ssResult.str(), aiter.second));
             ssResult.str("");
         }
     }
 
-    if (bResult)
+    if (qErrorNone == bResult)
     {
         mbIsRun = true;
     }
@@ -195,17 +195,19 @@ Argin:       None
 Argout:      sResult   result string
 return:      qerror
 *****************************************************************************************************************/
-QError QPandaAPI::getResult(STRING & sResult)
+QError QPandaAPI::getResult()
 {
-    if ((!mbIsRun)||(0 != sResult.size())||(0 == mQReusltMap.size()))
+    if ((!mbIsRun)||(0 != msResult.size())||(0 == mQResultMap.size()))
     {
+        
         return qParameterError;
+
     }
     stringstream ssTemp;
-    for (auto aiter : mQReusltMap)
+    for (auto aiter : mQResultMap)
     {
         ssTemp << aiter.first << " " << aiter.second << "\n";
-        sResult.append(ssTemp.str());
+        msResult.append(ssTemp.str());
         ssTemp.str("");
     }
     return qErrorNone;
@@ -215,17 +217,17 @@ QError QPandaAPI::getResult(STRING & sResult)
 Name:        getQState
 Description: get quantum program qstate
 Argin:       None
-Argout:      sState   state string
 return:      qerror
 *****************************************************************************************************************/
-QError QPandaAPI::getQuantumState(STRING & sState)
+QError QPandaAPI::getQuantumState()
 {
-    if ((!mbIsRun)||(0 != sState.size()))
+    if (!mbIsRun)
     {
         return qParameterError;
     }
+    msState.clear();
 
-    if (!mQHandle.getState(sState, &mQGatesParam))
+    if (!mQHandle.getState(msState, &mQGatesParam))
     {
         return getQStateError;
     } 
@@ -248,15 +250,16 @@ void QPandaAPI::countState()
         ssReuslt<<aiter.second;
     }
 
-    auto aiter = mQReusltMap.find(ssReuslt.str());
-    if (mQReusltMap.end() !=  aiter)
+    auto aiter = mQResultMap.find(ssReuslt.str());
+    if (mQResultMap.end() !=  aiter)
     {
         aiter->second+=1; 
     }
     else
     {
-        mQReusltMap.insert(PAIR(ssReuslt.str(),1));
+        mQResultMap.insert(PAIR(ssReuslt.str(),1));
     }
+
 }
 
 /*****************************************************************************************************************
