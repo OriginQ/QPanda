@@ -245,12 +245,12 @@ bool QCommandRun::action(stringstream & ssAction,QPROGCLASS * pParserProg)
     /*
      *  get result
      */
-    string sResult;
 
-    if (qErrorNone != _G_pParserProg->getResult(sResult))
+    if (qErrorNone != _G_pParserProg->getResult())
     {
         return false;
     }
+    string sResult(_G_pParserProg->msResult);
     cout << sResult << endl;
 
     /*
@@ -269,11 +269,13 @@ bool QCommandRun::action(stringstream & ssAction,QPROGCLASS * pParserProg)
         return true;
     }
 
-    string sQState;
-    if (qErrorNone != _G_pParserProg->getQuantumState(sQState))
+    
+    if (qErrorNone != _G_pParserProg->getQuantumState())
     {
         return false;
     }
+
+    string sQState(_G_pParserProg->msState);
     if (mbIsF)
     {
         saveQstate(sQState,_G_pParserProg->msFileName);
