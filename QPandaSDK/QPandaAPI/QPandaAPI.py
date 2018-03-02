@@ -90,6 +90,40 @@ except AttributeError:
     _newclass = 0
 
 
+class intp(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, intp, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, intp, name)
+    __repr__ = _swig_repr
+
+    def __init__(self):
+        this = _QPandaAPI.new_intp()
+        try:
+            self.this.append(this)
+        except Exception:
+            self.this = this
+    __swig_destroy__ = _QPandaAPI.delete_intp
+    __del__ = lambda self: None
+
+    def assign(self, value):
+        return _QPandaAPI.intp_assign(self, value)
+
+    def value(self):
+        return _QPandaAPI.intp_value(self)
+
+    def cast(self):
+        return _QPandaAPI.intp_cast(self)
+    __swig_getmethods__["frompointer"] = lambda x: _QPandaAPI.intp_frompointer
+    if _newclass:
+        frompointer = staticmethod(_QPandaAPI.intp_frompointer)
+intp_swigregister = _QPandaAPI.intp_swigregister
+intp_swigregister(intp)
+
+def intp_frompointer(t):
+    return _QPandaAPI.intp_frompointer(t)
+intp_frompointer = _QPandaAPI.intp_frompointer
+
 
 _QPandaAPI.CPU_swigconstant(_QPandaAPI)
 CPU = _QPandaAPI.CPU
@@ -112,6 +146,14 @@ class QPandaAPI(_object):
     __swig_getmethods__["msFileName"] = _QPandaAPI.QPandaAPI_msFileName_get
     if _newclass:
         msFileName = _swig_property(_QPandaAPI.QPandaAPI_msFileName_get, _QPandaAPI.QPandaAPI_msFileName_set)
+    __swig_setmethods__["msResult"] = _QPandaAPI.QPandaAPI_msResult_set
+    __swig_getmethods__["msResult"] = _QPandaAPI.QPandaAPI_msResult_get
+    if _newclass:
+        msResult = _swig_property(_QPandaAPI.QPandaAPI_msResult_get, _QPandaAPI.QPandaAPI_msResult_set)
+    __swig_setmethods__["msState"] = _QPandaAPI.QPandaAPI_msState_set
+    __swig_getmethods__["msState"] = _QPandaAPI.QPandaAPI_msState_get
+    if _newclass:
+        msState = _swig_property(_QPandaAPI.QPandaAPI_msState_get, _QPandaAPI.QPandaAPI_msState_set)
 
     def __init__(self):
         this = _QPandaAPI.new_QPandaAPI()
@@ -131,14 +173,47 @@ class QPandaAPI(_object):
     def run(self, iRepeat):
         return _QPandaAPI.QPandaAPI_run(self, iRepeat)
 
-    def getResult(self, sResult):
-        return _QPandaAPI.QPandaAPI_getResult(self, sResult)
+    def getResult(self):
+        return _QPandaAPI.QPandaAPI_getResult(self)
 
-    def getQuantumState(self, sState):
-        return _QPandaAPI.QPandaAPI_getQuantumState(self, sState)
+    def getQuantumState(self):
+        return _QPandaAPI.QPandaAPI_getQuantumState(self)
 QPandaAPI_swigregister = _QPandaAPI.QPandaAPI_swigregister
 QPandaAPI_swigregister(QPandaAPI)
 
+
+_QPandaAPI.qErrorNone_swigconstant(_QPandaAPI)
+qErrorNone = _QPandaAPI.qErrorNone
+
+_QPandaAPI.undefineError_swigconstant(_QPandaAPI)
+undefineError = _QPandaAPI.undefineError
+
+_QPandaAPI.qParameterError_swigconstant(_QPandaAPI)
+qParameterError = _QPandaAPI.qParameterError
+
+_QPandaAPI.qbitError_swigconstant(_QPandaAPI)
+qbitError = _QPandaAPI.qbitError
+
+_QPandaAPI.loadFileError_swigconstant(_QPandaAPI)
+loadFileError = _QPandaAPI.loadFileError
+
+_QPandaAPI.initStateError_swigconstant(_QPandaAPI)
+initStateError = _QPandaAPI.initStateError
+
+_QPandaAPI.destroyStateError_swigconstant(_QPandaAPI)
+destroyStateError = _QPandaAPI.destroyStateError
+
+_QPandaAPI.setComputeUnitError_swigconstant(_QPandaAPI)
+setComputeUnitError = _QPandaAPI.setComputeUnitError
+
+_QPandaAPI.runProgramError_swigconstant(_QPandaAPI)
+runProgramError = _QPandaAPI.runProgramError
+
+_QPandaAPI.getResultError_swigconstant(_QPandaAPI)
+getResultError = _QPandaAPI.getResultError
+
+_QPandaAPI.getQStateError_swigconstant(_QPandaAPI)
+getQStateError = _QPandaAPI.getQStateError
 # This file is compatible with both classic and new-style classes.
 
 
