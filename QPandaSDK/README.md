@@ -205,6 +205,7 @@
     getresult [TaskID]
 
 ## 6. 使用Python调用QPandaAPI类
+&nbsp;&nbsp;&nbsp;&nbsp;工作组使用SWIG工具封装的c++面向Python的接口，在使用之前需要安装SWIG.
 
 - 在QPandaSDK文件夹下执行make命令，生成libQRunesParser.so、libQuantumInstructionHandle.so动态库；
 
