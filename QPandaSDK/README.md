@@ -136,7 +136,7 @@
         int    iQnum     = 0;
         int    iRepeat   = 100;
         
-        QParserSDK::QParserProgram  qParserProg();
+        QPanda::QParserProgram  qParserProg;
         qParserProg.loadFile(sFilePath);
         qParserProg.setComputeUnit(CPU);
         qParserProg.run(iRepeat);
@@ -146,6 +146,7 @@
         cout << "result:\n" << sResult << endl;
         cout << "QState:\n" << sQState << endl;
         
+        getchar();
         return 0;
     }
 
