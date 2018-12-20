@@ -35,7 +35,6 @@
       <line>     mode : 执行模式 </line>
       <line>     1 :    本地模拟模式            </line>
       <line>     2 :    云平台模式              </line>
-      <line>     3 :    量子芯片模式            </line>
       <line>示例 : mode 1</line>
     </Des>
   </class>
@@ -60,7 +59,7 @@
 	  <line>run: -n [repeat]</line>
 	  <line>run: -f</line>
 	  <line>run: -o</line>
-	  <line>run: -b</line>
+	  <line>run: -fb</line>
       <line>example: run</line>
     </Des>
     <Des language="Chinese">
