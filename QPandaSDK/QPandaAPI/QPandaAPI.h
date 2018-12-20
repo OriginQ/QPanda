@@ -11,6 +11,7 @@ Description: QParserSDK
 #include "../QuantumInstructionHandle/QuantumGateParameter.h"
 #include "../QuantumInstructionHandle/QuantumInstructionHandleAPI.h"
 #include "../QuantumInstructionHandle/QError.h"
+#include <memory>
 #ifdef _WIN32
 #define DLL_EXPORTS
 #ifdef DLL_EXPORTS
@@ -30,14 +31,37 @@ namespace QPanda
 #define PMEASURE   2
 #define PAIR       pair<string,double>
 
-class  QPandaAPI 
+class  QPandaSDK 
 {
 public:
     STRING                        msFileName;                           /* file name                            */
-    STRING                        msResult;
-    STRING                        msState;
-    QPandaAPI();
-    ~QPandaAPI();
+    DLL_EXPORTS_API QPandaSDK();
+    DLL_EXPORTS_API ~QPandaSDK();
+
+
+    static  QPandaSDK * getIntance()
+    {
+        static QPandaSDK * temp = new QPandaSDK();
+        return temp;
+    }
+
+    /*************************************************************************************************************
+    Name:        getResult
+    Description: get quantum program result
+    Argin:       None
+    return:      qerror
+    *************************************************************************************************************/
+    STRING DLL_EXPORTS_API getResult();
+
+    /*************************************************************************************************************
+    Name:        getQuantumState
+    Description: get quantum program qstate
+    Argin:       None
+    return:      qerror
+    *************************************************************************************************************/
+    STRING DLL_EXPORTS_API  getQuantumState();
+
+
     /*************************************************************************************************************
     Name:        loadFile
     Description: load quantum program
@@ -45,7 +69,7 @@ public:
     Argout:      Qnum       quantum bit num
     return:      qerror
     *************************************************************************************************************/
-    QError loadFile(const string &sFilePath,int &Qnum);
+    int DLL_EXPORTS_API  loadFile(const string &sFilePath);
 
     /*************************************************************************************************************
     Name:        setComputeUnit
@@ -55,7 +79,7 @@ public:
     Argout:      None
     return:      qerror
     *************************************************************************************************************/
-    QError setComputeUnit(int iComputeUnit);
+    int DLL_EXPORTS_API setComputeUnit(int iComputeUnit);
 
     /*************************************************************************************************************
     Name:        run
@@ -64,29 +88,15 @@ public:
     Argout:      None
     return:      qerror
     *************************************************************************************************************/
-    QError run(int iRepeat);
+    int DLL_EXPORTS_API run(int iRepeat);
 
-    /*************************************************************************************************************
-    Name:        getResult
-    Description: get quantum program result
-    Argin:       None
-    return:      qerror
-    *************************************************************************************************************/
-    QError getResult();
 
-    /*************************************************************************************************************
-    Name:        getQuantumState
-    Description: get quantum program qstate
-    Argin:       None
-    return:      qerror
-    *************************************************************************************************************/
-    QError getQuantumState();
 
  private:
     map<string,double>            mQResultMap;                          /* quantum program result map           */
     QList                         mQList;
     bool                          mbIsRead = false;                     /* is read quantum program file         */
-    QuantumGateParam              mQGatesParam;
+    QuantumGateParam *             mQGatesParam;
     QuantumInstructionHandleAPI   mQHandle;
     int                           miComputeType;                        /* quantum program file is read         */
     int                           miMeasureType;                        /* quantum program measure type         */
@@ -108,7 +118,58 @@ public:
     Argout:      ssRet      binary result
     return:      true or false
     *************************************************************************************************************/
-    bool integerToBinary(int number,stringstream &ssRet, int iRetLen);
+    bool integerToBinary(size_t number,stringstream &ssRet, size_t iRetLen);
+
+
+
 };
 }
+
+using namespace QPanda;
+/*************************************************************************************************************
+Name:        loadFile
+Description: load quantum program
+Argin:       sFilePath  quantum program file path
+Argout:      Qnum       quantum bit num
+return:      qerror
+*************************************************************************************************************/
+int  loadFileAPI(char * pcFilePath);
+
+/*************************************************************************************************************
+Name:        setComputeUnit
+Description: set compute unit,you have two options:CPU or GPU.you can not choose again when you have
+already selected a compute unit
+Argin:       iComputeUnit  the type of compute unit
+Argout:      None
+return:      qerror
+*************************************************************************************************************/
+int  setComputeUnitAPI(int iComputeUnit);
+
+/*************************************************************************************************************
+Name:        run
+Description: run quantum program
+Argin:       iRepeat    quantum program repeat
+Argout:      None
+return:      qerror
+*************************************************************************************************************/
+int  runAPI(int iRepeat);
+
+int  getFileNameAPI(char * buf, int * pLength);
+
+/*************************************************************************************************************
+Name:        getResult
+Description: get quantum program result
+Argin:       None
+return:      qerror
+*************************************************************************************************************/
+int  getResultAPI(char * buf, int * pLength);
+
+/*************************************************************************************************************
+Name:        getQuantumState
+Description: get quantum program qstate
+Argin:       None
+return:      qerror
+*************************************************************************************************************/
+int  getQuantumStateAPI(char * buf, int * pLength);
+
 #endif

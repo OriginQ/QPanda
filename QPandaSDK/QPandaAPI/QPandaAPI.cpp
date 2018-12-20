@@ -24,23 +24,29 @@ Date:2018-01-19
 Description: QParserSDK
 *****************************************************************************************************************/
 #include "QPandaAPI.h"
-
+#include <algorithm>
 using namespace  QPanda;
 
-QPandaAPI::QPandaAPI()
+QPandaSDK::QPandaSDK()
 {
     mbIsRead = false;
     miComputeType = -1;
     miMeasureType = -1;
     mbIsRun = false;
+    mQGatesParam = nullptr;
 }
 
 
-QPandaAPI::~QPandaAPI()
+QPandaSDK::~QPandaSDK()
 {
     mQList.listClear();
 
-    mQHandle.destroyState(&mQGatesParam);
+    mQHandle.destroyState(mQGatesParam);
+
+    if (nullptr != mQGatesParam)
+    {
+        delete(mQGatesParam);
+    }
 }
 
 /*****************************************************************************************************************
@@ -50,17 +56,29 @@ Argin:       sFilePath  quantum program file path
 Argout:      Qnum       quantum bit num
 return:      qerror
 *****************************************************************************************************************/
-QError QPandaAPI::loadFile(const string &sFilePath,int &Qnum)
+int QPandaSDK::loadFile(const string &sFilePath)
 {
     /*
      *  judgment of conditions
      */
-    if(0 ==sFilePath.size()||(mbIsRead))
+
+    if(0 ==sFilePath.size())
     {
         return qParameterError;
     }
-    msFileName.append(sFilePath);
 
+    mbIsRead = false;
+    miComputeType = -1;
+    miMeasureType = -1;
+    mbIsRun = false;
+    if (nullptr != mQGatesParam)
+    {
+        delete(mQGatesParam);
+    }
+    mQGatesParam = new QuantumGateParam();
+    msFileName.clear();
+    msFileName.append(sFilePath);
+    mQList.listClear();
     /*
      *  analyse quantum program file
      */
@@ -71,9 +89,8 @@ QError QPandaAPI::loadFile(const string &sFilePath,int &Qnum)
         return qbitError;
     }
 
-    mQGatesParam.mQuantumBitNumber = iResult;
+    mQGatesParam->mQuantumBitNumber = iResult;
     mbIsRead = true;
-    Qnum = iResult;
 
     return qErrorNone;
 }
@@ -86,12 +103,12 @@ Argin:       iComputeUnit  the type of compute unit
 Argout:      None
 return:      qerror
 *****************************************************************************************************************/
-QError QPandaAPI::setComputeUnit(int iComputeUnit)
+int QPandaSDK::setComputeUnit(int iComputeUnit)
 {
     /*
      *  judgment of conditions
      */
-    if(iComputeUnit <= 0)
+    if((iComputeUnit <= 0)||(iComputeUnit > 2))
     {
         return qParameterError;
     }
@@ -111,46 +128,51 @@ Argin:       iRepeat    quantum program repeat
 Argout:      None
 return:      qerror
 *****************************************************************************************************************/
-QError QPandaAPI::run(int iRepeat)
+int QPandaSDK::run(int iRepeat)
 {
-    if ((iRepeat <= 0)||(!mbIsRead))
+    if (iRepeat <= 0)
     {
         return qParameterError;
+    }
+
+    if (!mbIsRead)
+    {
+        return notReadFileError;
     }
     
     /*
      *  initialize the operating environment 
      */
-    mQGatesParam.mPMeasure.clear();
-    mQGatesParam.mReturnValue.clear();
+    mQGatesParam->mPMeasure.clear();
+    mQGatesParam->mReturnValue.clear();
     mQResultMap.clear();
-    msResult.clear();
-    if (!mbIsRun)                                                       /* run the program for the first time   */
+    if (!mbIsRun)
     {
-        if (!mQHandle.initState(&mQGatesParam))
+        if (!mQHandle.initState(mQGatesParam))
         {
             return initStateError;
         }
     }
+
 
     QError bResult =qErrorNone;
 
     /*
      * run the program first to determine the type of measurement
      */
-    if(!mQHandle.transmit(mQList,&mQGatesParam))                        
+    if(!mQHandle.transmit(mQList,mQGatesParam))                        
     {
         bResult =runProgramError;
         mbIsRun = false;
     }
 
-    if((0 == mQGatesParam.mPMeasureSize)&&(qErrorNone == bResult))      /* measure                              */
+    if((0 == mQGatesParam->mPMeasureSize)&&(qErrorNone == bResult))      /* measure                              */
     {
         countState();
         miMeasureType = MEASURE;
         for (int i = 1; i < iRepeat; i++)
         {
-            if(!mQHandle.transmit(mQList,&mQGatesParam))
+            if(!mQHandle.transmit(mQList,mQGatesParam))
             {
                 bResult = runProgramError;
                 mbIsRun = false;
@@ -172,9 +194,9 @@ QError QPandaAPI::run(int iRepeat)
 
         miMeasureType = PMEASURE;
 
-        for (auto aiter : mQGatesParam.mPMeasure)
+        for (auto aiter : mQGatesParam->mPMeasure)
         {
-            integerToBinary(aiter.first, ssResult, mQGatesParam.mPMeasureSize);
+            integerToBinary(aiter.first, ssResult, mQGatesParam->mPMeasureSize);
             mQResultMap.insert(PAIR(ssResult.str(), aiter.second));
             ssResult.str("");
         }
@@ -195,22 +217,23 @@ Argin:       None
 Argout:      sResult   result string
 return:      qerror
 *****************************************************************************************************************/
-QError QPandaAPI::getResult()
+STRING QPandaSDK::getResult()
 {
-    if ((!mbIsRun)||(0 != msResult.size())||(0 == mQResultMap.size()))
+    STRING sResult;
+    stringstream ssTemp;
+    if ((!mbIsRun)||(0 == mQResultMap.size()))
     {
         
-        return qParameterError;
+        return ssTemp.str();
 
     }
-    stringstream ssTemp;
     for (auto aiter : mQResultMap)
     {
         ssTemp << aiter.first << " " << aiter.second << "\n";
-        msResult.append(ssTemp.str());
+        sResult.append(ssTemp.str());
         ssTemp.str("");
     }
-    return qErrorNone;
+    return sResult;
 }
 
 /*****************************************************************************************************************
@@ -219,19 +242,16 @@ Description: get quantum program qstate
 Argin:       None
 return:      qerror
 *****************************************************************************************************************/
-QError QPandaAPI::getQuantumState()
+STRING QPandaSDK::getQuantumState()
 {
+    STRING sState;
     if (!mbIsRun)
     {
-        return qParameterError;
+        return sState;
     }
-    msState.clear();
+    mQHandle.getState(sState, mQGatesParam);
 
-    if (!mQHandle.getState(msState, &mQGatesParam))
-    {
-        return getQStateError;
-    } 
-    return qErrorNone;
+    return sState;
 }
 
 /*****************************************************************************************************************
@@ -241,23 +261,25 @@ Argin:       None
 Argout:      None
 return:      None
 *****************************************************************************************************************/
-void QPandaAPI::countState()
+void QPandaSDK::countState()
 {
-    stringstream ssReuslt;
+    stringstream ssResult;
 
-    for (auto aiter : mQGatesParam.mReturnValue)
+    for (auto aiter : mQGatesParam->mReturnValue)
     {
-        ssReuslt<<aiter.second;
+        ssResult <<aiter.second;
     }
 
-    auto aiter = mQResultMap.find(ssReuslt.str());
+    string sResult(ssResult.str());
+    reverse(sResult.begin(), sResult.end());
+    auto aiter = mQResultMap.find(sResult);
     if (mQResultMap.end() !=  aiter)
     {
         aiter->second+=1; 
     }
     else
     {
-        mQResultMap.insert(PAIR(ssReuslt.str(),1));
+        mQResultMap.insert(PAIR(sResult,1));
     }
 
 }
@@ -270,7 +292,7 @@ Argin:       number     src number
 Argout:      ssRet      binary result
 return:      true or false
 *****************************************************************************************************************/
-bool QPandaAPI::integerToBinary(int number, stringstream & ssRet, int ret_len)
+bool QPandaSDK::integerToBinary(size_t number, stringstream & ssRet, size_t ret_len)
 {
     unsigned int index;
 
@@ -283,3 +305,68 @@ bool QPandaAPI::integerToBinary(int number, stringstream & ssRet, int ret_len)
     return true;
 }
 
+int  loadFileAPI(char * pcFilePath)
+{
+    auto temp = QPandaSDK::getIntance();
+    string sFilePaht(pcFilePath);
+    return temp->loadFile(sFilePaht);
+
+}
+
+int  setComputeUnitAPI(int iComputeUnit)
+{
+    auto temp = QPandaSDK::getIntance();
+    return temp->setComputeUnit(iComputeUnit);
+}
+
+int  runAPI(int iRepeat)
+{
+    auto temp = QPandaSDK::getIntance();
+    return temp->run(iRepeat);
+}
+
+int  getFileNameAPI(char * buf, int * pLength)
+{
+    auto temp = QPandaSDK::getIntance();
+    auto sFileName = temp->msFileName;
+    auto iLength = sFileName.size();
+
+    if (0 != (*pLength))
+    {
+        memcpy(buf, sFileName.c_str(), (*pLength));
+    }
+
+    (*pLength) = (int)iLength;
+
+    return qErrorNone;
+}
+
+int  getResultAPI(char * buf, int * pLength)
+{
+    auto temp = QPandaSDK::getIntance();
+    auto sResult = temp->getResult();
+    auto iLength = sResult.size();
+
+    if (0 != (*pLength))
+    {
+        memcpy(buf, sResult.c_str(), iLength);
+    }
+
+    (*pLength) = (int)iLength;
+    return qErrorNone;
+}
+
+int  getQuantumStateAPI(char * buf, int * pLength)
+{
+    auto temp = QPandaSDK::getIntance();
+    auto sStat = temp->getQuantumState();
+    auto iLength = sStat.size();
+
+    if (0 != (*pLength))
+    {
+        memcpy(buf, sStat.c_str(), iLength);
+    }
+
+    (*pLength) = (int)iLength;
+    return qErrorNone;
+}

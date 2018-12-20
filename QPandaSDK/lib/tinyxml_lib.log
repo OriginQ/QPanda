@@ -1,7 +1,0 @@
-﻿F:\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: 中间目录(x64\Release\)包含从另一个项目(tinyxmlSTL.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
-  tinystr.cpp
-  tinyxml.cpp
-  tinyxmlerror.cpp
-  tinyxmlparser.cpp
-  正在生成代码...
-  tinyxml_lib.vcxproj -> E:\tinyxml_2_6_2\tinyxml\x64\Release\tinyxml.lib

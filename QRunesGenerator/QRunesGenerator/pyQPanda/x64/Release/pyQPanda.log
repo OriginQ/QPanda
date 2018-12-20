@@ -1,0 +1,8 @@
+﻿  pyQPanda.cpp
+    正在创建库 F:\github\Q-Panda\QRunesGenerator\QRunesGenerator\x64\Release\pyQPanda.lib 和对象 F:\github\Q-Panda\QRunesGenerator\QRunesGenerator\x64\Release\pyQPanda.exp
+  正在生成代码
+  354 of 3811 functions ( 9.3%) were compiled, the rest were copied from previous compilation.
+    151 functions were new in current compilation
+    383 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  pyQPanda.vcxproj -> F:\github\Q-Panda\QRunesGenerator\QRunesGenerator\x64\Release\pyQPanda.dll

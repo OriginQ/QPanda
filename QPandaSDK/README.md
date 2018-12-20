@@ -164,7 +164,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;量子程序执行系统分为本地仿真运行模式和云仿真运行模式，可在启动程序时使用mode命令选择运行模式。
 
 ---
-    ConsoleApplication.exe mode [mode]
+    ConsoleApplication.exe -mode [mode]
     
 - mode 1 表示使用本地仿真模式；
 - mode 2 表示使用云仿真模式。
@@ -203,14 +203,7 @@
 ---
     getresult [TaskID]
 
-## 6. 使用Python调用QPandaAPI类
-&nbsp;&nbsp;&nbsp;&nbsp;工作组使用SWIG工具封装的c++面向Python的接口，在使用之前需要安装SWIG.
 
-- 在QPandaSDK文件夹下执行make命令，生成libQRunesParser.so、libQuantumInstructionHandle.so动态库；
-
-- 在QPandaAPI文件夹下执行make -f Makefile.QPandaAPI-swig命令，生成_QPandaAPI.so库；
-
-- 复制QPandaAPI.py到linuxlib文件夹下。 
 
 
 

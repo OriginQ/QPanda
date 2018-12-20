@@ -1,0 +1,10 @@
+﻿  QAlgorithm.cpp
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(74): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(78): warning C4067: 预处理器指令后有意外标记 - 应输入换行符
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(159): warning C4067: 预处理器指令后有意外标记 - 应输入换行符
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(168): warning C4554: “<<”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(168): warning C4334: “<<”: 32 位移位的结果被隐式转换为 64 位(是否希望进行 64 位移位?)
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(166): warning C4101: “x”: 未引用的局部变量
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(198): warning C4067: 预处理器指令后有意外标记 - 应输入换行符
+f:\github\q-panda\qrunesgenerator\qrunesgenerator\qrunesgenerator\qalgorithm.cpp(208): warning C4067: 预处理器指令后有意外标记 - 应输入换行符
+  QRunesGenerator.vcxproj -> F:\github\Q-Panda\QRunesGenerator\QRunesGenerator\x64\Release\QRunesGenerator.lib

@@ -105,11 +105,12 @@ bool QuantumInstructionGet::transmit(QNode            *pQInstructionNode,
                                      QuantumGateParam *pQuantumProParam, 
                                      QuantumGates     *pQGate)
 {
-    if (NULL == pQInstructionNode)
+    if (nullptr == pQInstructionNode)
     {
         return false;
     }
 
+    
     auto aiter = mInstructionMap.find(pQInstructionNode->gateSpecifier);
 
     if (mInstructionMap.end() != aiter)

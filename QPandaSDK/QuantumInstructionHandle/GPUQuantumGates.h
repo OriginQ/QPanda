@@ -26,6 +26,8 @@ public:
     GPUQuantumGates();
     ~GPUQuantumGates();
 
+    size_t getQStateSize();
+
     /*************************************************************************************************************
     Name:        getQState
     Description: get quantum state
@@ -467,6 +469,9 @@ public:
                    size_t stQuantumBit,
                    double errorRate,
                    int    stQuantumBitNumber);
+private:
+    int  miQbitNum;
+    bool mbIsInitQState;
 };
 
 #endif

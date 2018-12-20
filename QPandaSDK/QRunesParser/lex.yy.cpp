@@ -41,6 +41,7 @@ limitations under the License.
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <stdint.h>
 #ifdef  __linux__
 #include<unistd.h>
 #endif //  

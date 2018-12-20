@@ -24,17 +24,19 @@ Date:2018-1-29
 Description: quantum cloud command vector
 ************************************************************************/
 #include "QCloudCommandVector.h"
-
+#include <regex>
+using namespace std;
 
 QCloudCommandVector::QCloudCommandVector()
 {
-    QCommand * pSubmit    = (QCommand *)new QCommandSubmit;
-    QCommand * pTaskList  = (QCommand *)new QCommandTaskList;
-    QCommand * pGetResult = (QCommand *)new QCommandGetResult;
+    QCommand * pSubmit = dynamic_cast<QCommand *> (new QCommandSubmit);
+    QCommand * pTaskList  = dynamic_cast<QCommand *>(new QCommandTaskList);
+    QCommand * pGetResult = dynamic_cast<QCommand *>(new QCommandGetResult);
 
     mCommandMap.insert(QCPAIR("submit",pSubmit));
     mCommandMap.insert(QCPAIR("tasklist",pTaskList));
     mCommandMap.insert(QCPAIR("getresult",pGetResult));
+    mpVirQCHttp = nullptr;
 }
 
 
@@ -44,6 +46,7 @@ QCloudCommandVector::~QCloudCommandVector()
     {
         delete(aiter.second);
     }
+
 }
 /*****************************************************************************************************************
 Name:        commandAction
@@ -54,18 +57,24 @@ return:      true or false
 *****************************************************************************************************************/
 bool QCloudCommandVector::commandAction(std::stringstream & ssAction)
 {
-    string sTemp;
     if (ssAction.str().empty())
     {
         return false;
     }
-
-    getline(ssAction,sTemp, ' ');
-    
-    auto aiter = mCommandMap.find(sTemp);
-    if (aiter != mCommandMap.end())
+    string sAction(ssAction.str());
+    regex  pattern("(\\w+( )|(\\w+)){1}");
+    smatch results;
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
+    if (regex_search(start, end, results, pattern))
     {
-        return aiter->second->action(ssAction,this->mpVirQCHttp);
+        string sTemp(results[1].str());
+        sTemp.erase(sTemp.find_last_not_of(" ") + 1);
+        auto aiter = mCommandMap.find(sTemp);
+        if (aiter != mCommandMap.end())
+        {
+            return aiter->second->action(ssAction, this->mpVirQCHttp);
+        }
     }
 
     cout << "error command" << endl;
