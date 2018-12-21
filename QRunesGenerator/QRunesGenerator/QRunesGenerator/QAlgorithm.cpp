@@ -163,25 +163,9 @@ void disquantumwalk(qRefList a)
     size_t qnum = a.size();
 
     X(*a[qnum - 2]);         //≥ı ºªØ
-    double x;
     X(*a.back());
     for (size_t i = 0; i < 1 << (qnum - 1) - 1; i++)
     {
-        /*
-        x = randGenerator();
-        if (x < 0.25)
-        {
-        RX(*a.back(), randnum*PI);
-        }
-        else if (x < 0.5)
-        {
-        RY(*a.back(), randnum*PI);
-        }
-        else if (x < 0.75)
-        {
-        RZ(*a.back(), randnum*PI);
-        }
-        */
         Hadamard(*a.back());
         discretequantumwalkstep(a);
     }

@@ -399,7 +399,7 @@ void constantModAdd(qRefList a, int C, int M)
 }
 
 
-void constantModMul(qRefList a, int C, int M) {
+void constantModMul(qRefList a, int C, size_t M) {
     size_t qnum = a.size();
     ancillaVec b(qnum);
     qRefList bf;
@@ -666,7 +666,7 @@ void quantumredpacketnew(qRefList a, vector<double> &b)
 {
     size_t qnum = a.size();
     size_t stnum = b.size();
-    if ((1 << qnum) != stnum)
+    if ((1ull << qnum) != stnum)
     {
         cout << "not matched" << endl;
         return;
@@ -686,17 +686,17 @@ void quantumredpacketnew(qRefList a, vector<double> &b)
 #define a *a
     for (size_t i = qnum; i > 0; i--)       //作用在第i个比特
     {
-        for (size_t k = 0; k < (1 << (qnum - i)); k++)       //第i个比特需要1<<(n-i)个受控RY门
+        for (size_t k = 0; k < (1ull << (qnum - i)); k++)       //第i个比特需要1<<(n-i)个受控RY门
         {
 
             denominator = 0;
             numerator = 0;
             theta = 0;
-            for (size_t j = k << i; j < (k << i) + (1 << i); j++)
+            for (size_t j = k << i; j < (k << i) + (1ull << i); j++)
             {
                 denominator += b[j];
             }
-            for (size_t j = k << i; j < (k << i) + (1 << (i - 1)); j++)
+            for (size_t j = k << i; j < (k << i) + (1ull << (i - 1)); j++)
             {
                 numerator += b[j];
             }

@@ -27,7 +27,7 @@ void classtoQu(qRefList a, int C);
 void stateswap(qRefList a, qRefList b);
 int modreverse(int c, int m);
 void constantModAdd(qRefList a, int C, int M);
-void constantModMul(qRefList a, int C, int M);
+void constantModMul(qRefList a, int C, size_t M);
 void constModExp(qRefList a, qRefList b, int c, int m);
 void copy(qRefList a, qRefList b);
 void adder(qRefList a, qRefList b);
