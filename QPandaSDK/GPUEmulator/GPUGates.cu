@@ -35,7 +35,6 @@ using namespace std;
 #define SQ2 0.707106781186548
 #define PI 3.141592653589793
 #define THREADDIM 1024
-
 namespace GATEGPU
 {
     //typedef quantumstate QState;
@@ -1950,7 +1949,7 @@ bool GATEGPU:: pMeasure(QState& psigpu, vecprob& vprob,QSIZE * block, QSIZE m)
         cudaDeviceSynchronize();
         //vprob[i].first = i;
         //vprob[i].second = probc[i];
-        vprob.push_back(PAIR(i, probc[i]));
+        vprob.push_back(GPUPAIR(i, probc[i]));
 
     }
     //std::cout << *probc << endl;
@@ -2012,7 +2011,7 @@ bool GATEGPU::pMeasurenew(QState& psigpu, vector<pair<size_t, double>>& vprob, Q
             cudaDeviceSynchronize();
             //vprob[i].first = i;
             //vprob[i].second = probc[i];
-            vprob.push_back(PAIR(i, probc[i]));
+            vprob.push_back(GPUPAIR(i, probc[i]));
 
         }
         if (vprob.size() <= 10)
@@ -2074,7 +2073,7 @@ bool GATEGPU::pMeasurenew(QState& psigpu, vector<pair<size_t, double>>& vprob, Q
         }
         for (size_t i = 0; i < 10; i++)
         {
-            vprob.push_back(PAIR(0, 0));
+            vprob.push_back(GPUPAIR(0, 0));
         }
         size_t BLOCKDIM = blocknum / THREADDIM;
         for (size_t i = 0; i < (1u << m); i += blocknum)
@@ -2092,7 +2091,7 @@ bool GATEGPU::pMeasurenew(QState& psigpu, vector<pair<size_t, double>>& vprob, Q
             {
                 if (probtemp[j] > vprob[9].second)
                 {
-                    vprob[9] = PAIR(i + j, probtemp[j]);
+                    vprob[9] = GPUPAIR(i + j, probtemp[j]);
                     sort(vprob.begin(), vprob.end(), probcompare);
                 }
             }

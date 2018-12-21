@@ -2,13 +2,13 @@
 Copyright (c) 2017-2018 Origin Quantum Computing Co., Ltd.. All Rights Reserved.
 
 
- 
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at 
+You may obtain a copy of the License at
 
- 	http://www.apache.org/licenses/LICENSE-2.0 
- 
+http://www.apache.org/licenses/LICENSE-2.0
+
 Unless required by applicable law or agreed to in writing, software
 
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 See the License for the specific language
-governing permissions and 
+governing permissions and
 limitations under the License.
 
 Author:Dou Menghan
@@ -33,16 +33,17 @@ Description:gpu quantum logic gates class
 using std::map;
 using std::pair;
 
-GPUQuantumGates::GPUQuantumGates()
+GPUQuantumGates::GPUQuantumGates() :mbIsInitQState(false)
 {
-    #ifdef _WIN32
-        mGPUDll = dllLoad("GPUEmulator.dll");
-    #elif __linux__
-        mGPUDll = dllLoad("GPUEmulator.so");
-    #endif
-
+#ifdef _WIN32
+    mGPUDll = dllLoad("GPUEmulator.dll");
+#elif __linux__
+    mGPUDll = dllLoad("libGPUEmulator.so");
+#endif
+    cout << "open QuantumGPU dll success" << endl;
     if (NULL == mGPUDll)
     {
+        cout << "open QuantumGPU dll fail" << endl;
         throw runtime_error("open QuantumGPU dll fail ");
     }
 }
@@ -50,6 +51,16 @@ GPUQuantumGates::GPUQuantumGates()
 GPUQuantumGates::~GPUQuantumGates()
 {
     dllFree(mGPUDll);
+}
+
+size_t GPUQuantumGates::getQStateSize()
+{
+    if (!mbIsInitQState)
+        return 0;
+    else
+    {
+        return 1ll << miQbitNum;
+    }
 }
 
 /*****************************************************************************************************************
@@ -61,16 +72,18 @@ return:      quantum error
 *****************************************************************************************************************/
 bool GPUQuantumGates::getQState(string & sState, QuantumGateParam *pQuantumProParam)
 {
-    GATEGPU::pGetState pGState = (GATEGPU::pGetState)dllFun(mGPUDll,"getState");
+    if (miQbitNum <= 0)
+        return false;
+    GATEGPU::pGetState pGState = (GATEGPU::pGetState)dllFun(mGPUDll, "getState");
     pGState(mvCPUQuantumStat, mvQuantumStat, pQuantumProParam->mQuantumBitNumber);
-    size_t uiDim = 1u << (pQuantumProParam->mQuantumBitNumber);
+    size_t uiDim = 1ll << (pQuantumProParam->mQuantumBitNumber);
     stringstream ssTemp;
     for (size_t i = 0; i < uiDim; i++)
     {
-        ssTemp << "state[" << i << "].real = " 
-               << mvCPUQuantumStat.real[i] 
-               << " " << "state[" << i << "].imag = " 
-               << mvCPUQuantumStat.imag[i] << "\n";
+        ssTemp << "state[" << i << "].real = "
+            << mvCPUQuantumStat.real[i]
+            << " " << "state[" << i << "].imag = "
+            << mvCPUQuantumStat.imag[i] << "\n";
     }
     sState.append(ssTemp.str());
     return true;
@@ -80,13 +93,13 @@ bool GPUQuantumGates::getQState(string & sState, QuantumGateParam *pQuantumProPa
 Name:        endGate
 Description: end gate
 Argin:       pQuantumProParam       quantum program param pointer
-             pQGate                 quantum gate
+pQGate                 quantum gate
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::endGate(QuantumGateParam *pQuantumProParam, QuantumGates * pQGate)
 {
-    GATEGPU::pClearState pCState = (GATEGPU::pClearState)dllFun(mGPUDll,"clearState");
+    GATEGPU::pClearState pCState = (GATEGPU::pClearState)dllFun(mGPUDll, "clearState");
 
     if (nullptr == pCState)
     {
@@ -142,7 +155,7 @@ QError GPUQuantumGates::Reset(size_t qn)
     {
         return undefineError;
     }
-    
+
     if (!pQReset(mvQuantumStat, qn, 0))
     {
         return undefineError;
@@ -178,18 +191,18 @@ QError GPUQuantumGates::pMeasure(Qnum& qnum, vector<pair<size_t, double>> &mResu
 Name:        Hadamard
 Description: controled-Hadamard gate
 Argin:       qn                 qubit number that the Hadamard gate operates on.
-             error_rate         the errorrate of the gate
-             vControlBit        control bit vector
-             stQuantumBitNumber quantum bit number
+error_rate         the errorrate of the gate
+vControlBit        control bit vector
+stQuantumBitNumber quantum bit number
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::Hadamard(size_t  qn,
-                                 double  error_rate,
-                                 Qnum    vControlBit,
-                                 size_t  stQuantumBitNumber)
+    double  error_rate,
+    Qnum    vControlBit,
+    size_t  stQuantumBitNumber)
 {
-    GATEGPU::pControlHadamard pCH= (GATEGPU::pControlHadamard)dllFun(mGPUDll, "controlHadamard");
+    GATEGPU::pControlHadamard pCH = (GATEGPU::pControlHadamard)dllFun(mGPUDll, "controlHadamard");
 
     if (nullptr == pCH)
     {
@@ -207,10 +220,10 @@ QError GPUQuantumGates::Hadamard(size_t  qn,
 /*****************************************************************************************************************
 Name:        RX
 Description: RX gate,quantum state rotates ¦È by x axis.The matric is:
-             [cos(¦È/2),-i*sin(¦È/2);i*sin(¦È/2),cos(¦È/2)]
+[cos(¦È/2),-i*sin(¦È/2);i*sin(¦È/2),cos(¦È/2)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
-             theta       rotation angle
-             error_rate  the errorrate of the gate
+theta       rotation angle
+error_rate  the errorrate of the gate
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
@@ -220,26 +233,28 @@ QError GPUQuantumGates::RX(size_t qn, double theta, double error_rate)
 
     if (nullptr == pRX)
     {
+        cout << "qResult not find " << endl;
         return undefineError;
     }
 
     if (!pRX(mvQuantumStat, qn, theta, error_rate))
     {
+        cout << "qResult not fail " << endl;
         return undefineError;
     }
 
-    
+
     return qErrorNone;
 }
 
 /*****************************************************************************************************************
 Name:        RX
 Description: RX dagger gate,quantum state rotates ¦È by x axis.The matric is:
-             [cos(¦È/2),-i*sin(¦È/2);i*sin(¦È/2),cos(¦È/2)]
+[cos(¦È/2),-i*sin(¦È/2);i*sin(¦È/2),cos(¦È/2)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
-             theta       rotation angle
-             error_rate  the errorrate of the gate
-             iDagger     is dagger
+theta       rotation angle
+error_rate  the errorrate of the gate
+iDagger     is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
@@ -247,21 +262,24 @@ QError GPUQuantumGates::RX(size_t qn, double theta, double error_rate, int iDagg
 {
     if (!iDagger)
     {
-        return undefineError;
+        return RX(qn, theta, error_rate);
     }
+
 
     GATEGPU::pRXdagger pRXDagger = (GATEGPU::pRXdagger)dllFun(mGPUDll, "RXdagger");
 
     if (nullptr == pRXDagger)
     {
+        cout << "qResult not find " << endl;
         return undefineError;
     }
 
     if (!pRXDagger(mvQuantumStat, qn, theta, error_rate))
     {
+        cout << "qResult not fail " << endl;
         return undefineError;
     }
-    
+
     return qErrorNone;
 }
 
@@ -269,18 +287,18 @@ QError GPUQuantumGates::RX(size_t qn, double theta, double error_rate, int iDagg
 Name:        RX
 Description: controled-RX gate
 Argin:       qn                 qubit number that the Hadamard gate operates on.
-             theta              rotation angle
-             error_rate         the errorrate of the gate
-             vControlBitNumber  control bit number
-             stQuantumBitNumber quantum bit number
+theta              rotation angle
+error_rate         the errorrate of the gate
+vControlBitNumber  control bit number
+stQuantumBitNumber quantum bit number
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::RX(size_t   qn,
-                           double   theta,
-                           double   error_rate,
-                           Qnum     vControlBitNumber,
-                           size_t   stQuantumBitNumber)
+    double   theta,
+    double   error_rate,
+    Qnum     vControlBitNumber,
+    size_t   stQuantumBitNumber)
 {
     GATEGPU::pControlRX pCRX = (GATEGPU::pControlRX)dllFun(mGPUDll, "controlRX");
 
@@ -301,24 +319,24 @@ QError GPUQuantumGates::RX(size_t   qn,
 Name:        RX
 Description: controled-RX dagger gate
 Argin:       qn                 qubit number that the Hadamard gate operates on.
-             theta              rotation angle
-             error_rate         the errorrate of the gate
-             vControlBitNumber  control bit number
-             stQuantumBitNumber quantum bit number
-             iDagger            is dagger
+theta              rotation angle
+error_rate         the errorrate of the gate
+vControlBitNumber  control bit number
+stQuantumBitNumber quantum bit number
+iDagger            is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::RX(size_t  qn,
-                           double  theta,
-                           double  error_rate,
-                           Qnum    vControlBitNumber,
-                           size_t  stQuantumBitNumber,
-                           int     iDagger)
+    double  theta,
+    double  error_rate,
+    Qnum    vControlBitNumber,
+    size_t  stQuantumBitNumber,
+    int     iDagger)
 {
     if (!iDagger)
     {
-        return undefineError;
+        return RX(qn, theta, 0, vControlBitNumber, stQuantumBitNumber);
     }
 
     GATEGPU::pControlRXdagger pCRXDagger = (GATEGPU::pControlRXdagger)dllFun(mGPUDll, "controlRXdagger");
@@ -340,19 +358,19 @@ QError GPUQuantumGates::RX(size_t  qn,
 Name:        RY
 Description: RY control gate
 Argin:       qn                 qubit number that the Hadamard gate operates on.
-             theta              rotation angle
-             error_rate         the errorrate of the gate
-             vControlBit        control bit vector
-             stQuantumBitNumber quantum bit number
+theta              rotation angle
+error_rate         the errorrate of the gate
+vControlBit        control bit vector
+stQuantumBitNumber quantum bit number
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::RY(size_t   qn,
-                           double   theta,
-                           double   error_rate,
-                           Qnum     vControlBit,
-                           size_t   stQuantumBitNumber,
-                           int      iDagger)
+    double   theta,
+    double   error_rate,
+    Qnum     vControlBit,
+    size_t   stQuantumBitNumber,
+    int      iDagger)
 {
     if (iDagger)
     {
@@ -382,7 +400,7 @@ QError GPUQuantumGates::RY(size_t   qn,
             return undefineError;
         }
     }
-    
+
     return qErrorNone;
 }
 
@@ -390,14 +408,14 @@ QError GPUQuantumGates::RY(size_t   qn,
 Name:        RY
 
 Description: RY gate,quantum state rotates ¦È by y axis.The matric is
-             [cos(¦È/2),-sin(¦È/2);sin(¦È/2),cos(¦È/2)]
+[cos(¦È/2),-sin(¦È/2);sin(¦È/2),cos(¦È/2)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
-             theta        rotation angle
-             error_rate   the errorrate of the gate
+theta        rotation angle
+error_rate   the errorrate of the gate
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
-QError GPUQuantumGates::RY(size_t qn, double theta, double error_rate,int iDagger)
+QError GPUQuantumGates::RY(size_t qn, double theta, double error_rate, int iDagger)
 {
     if (iDagger)
     {
@@ -427,7 +445,7 @@ QError GPUQuantumGates::RY(size_t qn, double theta, double error_rate,int iDagge
             return undefineError;
         }
     }
-    
+
     return qErrorNone;
 }
 
@@ -436,9 +454,9 @@ Name:        RZ
 Description: RZ gate,quantum state rotates ¦È by z axis.The matric is
 [1 0;0 exp(i*¦È)]
 Argin:       qn          qubit number that the Hadamard gate operates on.
-             theta       rotation angle
-             error_rate  the errorrate of the gate
-             iDagger     is dagger
+theta       rotation angle
+error_rate  the errorrate of the gate
+iDagger     is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
@@ -472,7 +490,7 @@ QError GPUQuantumGates::RZ(size_t qn, double theta, double error_rate, int iDagg
             return undefineError;
         }
     }
-    
+
     return qErrorNone;
 }
 
@@ -480,20 +498,20 @@ QError GPUQuantumGates::RZ(size_t qn, double theta, double error_rate, int iDagg
 Name:        RZ
 Description: RZ gate
 Argin:       qn                 qubit number that the Hadamard gate operates on.
-             theta              rotation angle
-             error_rate         the errorrate of the gate
-             vControlBitNumber  control bit number
-             stQuantumBitNumber quantum bit number
-             iDagger            is dagger
+theta              rotation angle
+error_rate         the errorrate of the gate
+vControlBitNumber  control bit number
+stQuantumBitNumber quantum bit number
+iDagger            is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::RZ(size_t   qn,
-                           double   theta,
-                           double   error_rate,
-                           Qnum     vControlBitNumber,
-                           size_t   stQuantumBitNumber,
-                           int      iDagger)
+    double   theta,
+    double   error_rate,
+    Qnum     vControlBitNumber,
+    size_t   stQuantumBitNumber,
+    int      iDagger)
 {
     if (!iDagger)
     {
@@ -523,18 +541,18 @@ QError GPUQuantumGates::RZ(size_t   qn,
             return undefineError;
         }
     }
-    
+
     return qErrorNone;
 }
 
 /*****************************************************************************************************************
 Name: CNOT
 Description: CNOT gate,when control qubit is |0>,goal qubit does flip,
-             when control qubit is |1>,goal qubit flips.the matric is:
-             [1 0 0 0;0 1 0 0;0 0 0 1;0 0 1 0]
+when control qubit is |1>,goal qubit flips.the matric is:
+[1 0 0 0;0 1 0 0;0 0 0 1;0 0 1 0]
 Argin:       qn_1        control qubit number
-             qn_2        goal qubit number
-             error_rate  the errorrate of the gate
+qn_2        goal qubit number
+error_rate  the errorrate of the gate
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
@@ -551,7 +569,7 @@ QError GPUQuantumGates::CNOT(size_t qn_1, size_t qn_2, double error_rate)
     {
         return undefineError;
     }
-    
+
     return qErrorNone;
 }
 
@@ -559,18 +577,18 @@ QError GPUQuantumGates::CNOT(size_t qn_1, size_t qn_2, double error_rate)
 Name:        CNOT
 Description: CNOT control gate
 Argin:       qn_1               control qubit number
-             qn_2               goal qubit number
-             error_rate         the errorrate of the gate
-             vControlBitNumber  control bit number
-             stQuantumBitNumber quantum bit number
+qn_2               goal qubit number
+error_rate         the errorrate of the gate
+vControlBitNumber  control bit number
+stQuantumBitNumber quantum bit number
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::CNOT(size_t  qn_1,
-                             size_t  qn_2,
-                             double  error_rate,
-                             Qnum    vControlBitNumber,
-                             int     stQuantumBitNumber)
+    size_t  qn_2,
+    double  error_rate,
+    Qnum    vControlBitNumber,
+    int     stQuantumBitNumber)
 {
     return qErrorNone;
 }
@@ -579,21 +597,21 @@ QError GPUQuantumGates::CNOT(size_t  qn_1,
 /*****************************************************************************************************************
 Name:        CR
 Description: CR gate,when control qubit is |0>,goal qubit does not rotate,
-             when control qubit is |1>,goal qubit rotate ¦È by z axis.the matric is:
-             [1 0 0 0;0 1 0 0;0 0 1 0;0 0 0 exp(i*¦È)]
+when control qubit is |1>,goal qubit rotate ¦È by z axis.the matric is:
+[1 0 0 0;0 1 0 0;0 0 1 0;0 0 0 exp(i*¦È)]
 Argin:       qn_1        control qubit number
-             qn_2        goal qubit number
-             theta       roration angle
-             error_rate  the errorrate of the gate
-             iDagger     is dagger
+qn_2        goal qubit number
+theta       roration angle
+error_rate  the errorrate of the gate
+iDagger     is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::CR(size_t  qn_1,
-                           size_t  qn_2,
-                           double  theta,
-                           double  error_rate,
-                           int     iDagger)
+    size_t  qn_2,
+    double  theta,
+    double  error_rate,
+    int     iDagger)
 {
     if (!iDagger)
     {
@@ -608,7 +626,7 @@ QError GPUQuantumGates::CR(size_t  qn_1,
         {
             return undefineError;
         }
-        
+
     }
     else
     {
@@ -633,16 +651,16 @@ Name:        iSWAP
 Description: iSWAP gate,both qubits swap and rotate ¦Ð by z-axis,the matric is:
 [1 0 0 0;0 0 -i 0;0 -i 0 0;0 0 0 1]
 Argin:       qn_1        first qubit number
-             qn_2        second qubit number
-             error_rate  the errorrate of the gate
-             iDagger     is dagger
+qn_2        second qubit number
+error_rate  the errorrate of the gate
+iDagger     is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::iSWAP(size_t qn_1,
-                              size_t qn_2,
-                              double error_rate,
-                              int    iDagger)
+    size_t qn_2,
+    double error_rate,
+    int    iDagger)
 {
     if (!iDagger)
     {
@@ -678,22 +696,22 @@ QError GPUQuantumGates::iSWAP(size_t qn_1,
 /*****************************************************************************************************************
 Name:        iSWAP
 Description: iSWAP gate,both qubits swap and rotate ¦Ð by z-axis,the matric is:
-             [1 0 0 0;0 0 -i 0;0 -i 0 0;0 0 0 1]
+[1 0 0 0;0 0 -i 0;0 -i 0 0;0 0 0 1]
 Argin:       qn_1               first qubit number
-             qn_2               second qubit number
-             error_rate         the errorrate of the gate
-             vControlBitNumber  control bit number
-             stQuantumBitNumber quantum bit number
-             iDagger            is dagger
+qn_2               second qubit number
+error_rate         the errorrate of the gate
+vControlBitNumber  control bit number
+stQuantumBitNumber quantum bit number
+iDagger            is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::iSWAP(size_t  qn_1,
-                              size_t  qn_2,
-                              double  error_rate,
-                              Qnum    vControlBitNumber,
-                              int     stQuantumBitNumber,
-                              int     iDagger)
+    size_t  qn_2,
+    double  error_rate,
+    Qnum    vControlBitNumber,
+    int     stQuantumBitNumber,
+    int     iDagger)
 {
     return qErrorNone;
 }
@@ -703,8 +721,8 @@ Name:        controlSwap
 Description: iSWAP gate,both qubits swap and rotate ¦Ð by z-axis,the matric is:
 [1 0 0 0;0 0 -i 0;0 -i 0 0;0 0 0 1]
 Argin:       qn_1        first qubit number
-             qn_2        second qubit number
-             error_rate  the errorrate of the gate
+qn_2        second qubit number
+error_rate  the errorrate of the gate
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
@@ -717,18 +735,18 @@ QError GPUQuantumGates::controlSwap(size_t qn_1, size_t qn_2, size_t qn_3, doubl
 /*****************************************************************************************************************
 Name:        sqiSWAP
 Description: sqiSWAP gate,both qubits swap and rotate ¦Ð by z-axis,the matrix is:
-             [1 0 0 0;0 1/sqrt(2) -i/sqrt(2) 0;0 -i/sqrt(2) 1/sqrt(2) 0;0 0 0 1]
+[1 0 0 0;0 1/sqrt(2) -i/sqrt(2) 0;0 -i/sqrt(2) 1/sqrt(2) 0;0 0 0 1]
 Argin:       qn_1        first qubit number
-             qn_2        second qubit number
-             error_rate  the errorrate of the gate
-             iDagger     is dagger
+qn_2        second qubit number
+error_rate  the errorrate of the gate
+iDagger     is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::sqiSWAP(size_t  qn_1,
-                                size_t  qn_2,
-                                double  error_rate,
-                                int     iDagger)
+    size_t  qn_2,
+    double  error_rate,
+    int     iDagger)
 {
     if (!iDagger)
     {
@@ -739,11 +757,11 @@ QError GPUQuantumGates::sqiSWAP(size_t  qn_1,
             return undefineError;
         }
 
-        if (!pSqiSwap(mvQuantumStat, qn_1, qn_2,0))
+        if (!pSqiSwap(mvQuantumStat, qn_1, qn_2, 0))
         {
             return undefineError;
         }
-        
+
     }
     else
     {
@@ -765,22 +783,22 @@ QError GPUQuantumGates::sqiSWAP(size_t  qn_1,
 /*****************************************************************************************************************
 Name:        sqiSWAP
 Description: sqiSWAP gate,both qubits swap and rotate ¦Ð by z-axis,the matrix is:
-             [1 0 0 0;0 1/sqrt(2) -i/sqrt(2) 0;0 -i/sqrt(2) 1/sqrt(2) 0;0 0 0 1]
+[1 0 0 0;0 1/sqrt(2) -i/sqrt(2) 0;0 -i/sqrt(2) 1/sqrt(2) 0;0 0 0 1]
 Argin:       qn_1               first qubit number
-             qn_2               second qubit number
-             error_rate         the errorrate of the gate
-             vControlBitNumber  control bit number
-             stQuantumBitNumber quantum bit number
-             iDagger            is dagger
+qn_2               second qubit number
+error_rate         the errorrate of the gate
+vControlBitNumber  control bit number
+stQuantumBitNumber quantum bit number
+iDagger            is dagger
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::sqiSWAP(size_t  qn_1,
-                                size_t  qn_2,
-                                double  error_rate,
-                                Qnum    vControlBitNumber,
-                                int     stQuantumBitNumber,
-                                int     iDagger)
+    size_t  qn_2,
+    double  error_rate,
+    Qnum    vControlBitNumber,
+    int     stQuantumBitNumber,
+    int     iDagger)
 {
     return qErrorNone;
 }
@@ -798,10 +816,10 @@ int GPUQuantumGates::qubitMeasure(size_t qn)
 
     if (nullptr == pQmeasure)
     {
-        return undefineError;
+        return (int)(undefineError);
     }
 
-    return pQmeasure(mvQuantumStat, 1<<qn);
+    return pQmeasure(mvQuantumStat, 1ll << qn);
 }
 
 
@@ -820,6 +838,8 @@ QError GPUQuantumGates::initState(QuantumGateParam * pQuantumProParam)
     {
         return undefineError;
     }
+    miQbitNum = pQuantumProParam->mQuantumBitNumber;
+    mbIsInitQState = true;
     if (!pInit(mvCPUQuantumStat, mvQuantumStat, pQuantumProParam->mQuantumBitNumber))
     {
         return undefineError;
@@ -855,8 +875,8 @@ QError GPUQuantumGates::destroyState(size_t stNumber)
 Name:        unitarySingleQubitGate
 Description: unitary single qubit gate
 Argin:       qn          target qubit number
-             matrix      matrix of the gate
-             error_rate  the errorrate of the gate
+matrix      matrix of the gate
+error_rate  the errorrate of the gate
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
@@ -869,7 +889,7 @@ QError GPUQuantumGates::unitarySingleQubitGate(size_t qn, void* matrix, double e
 Name:        matReverse
 Description: change the position of the qubits in 2-qubit gate
 Argin:       (*mat)[4]       pointer of the origin 2D array
-             (*mat_rev)[4]   pointer of the changed 2D array
+(*mat_rev)[4]   pointer of the changed 2D array
 Argout:      2D array
 return:      quantum error
 *****************************************************************************************************************/
@@ -923,9 +943,9 @@ bool GPUQuantumGates::compareCalculationUnitType(string& sCalculationUnitType)
 /*****************************************************************************************************************
 Name:        NOT
 Description: NOT gate,invert the state.The matrix is
-             [0 1;1 0]
+[0 1;1 0]
 Argin:       qn          qubit number that the Hadamard gate operates on.
-             error_rate  the errorrate of the gate
+error_rate  the errorrate of the gate
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
@@ -942,25 +962,25 @@ QError GPUQuantumGates::NOT(size_t qn, double error_rate)
     {
         return undefineError;
     }
-    
+
     return qErrorNone;
 }
 
 /*****************************************************************************************************************
 Name:        NOT
 Description: NOT gate,invert the state.The matrix is
-             [0 1;1 0]
+[0 1;1 0]
 Argin:       qn                 qubit number that the Hadamard gate operates on.
-             error_rate         the errorrate of the gate
-             vControlBit        control bit vector
-             stQuantumBitNumber quantum bit number
+error_rate         the errorrate of the gate
+vControlBit        control bit vector
+stQuantumBitNumber quantum bit number
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::NOT(size_t  qn,
-                            double  error_rate,
-                            Qnum    vControlBit,
-                            int     stQuantumBitNumber)
+    double  error_rate,
+    Qnum    vControlBit,
+    int     stQuantumBitNumber)
 {
     return qErrorNone;
 }
@@ -969,18 +989,18 @@ QError GPUQuantumGates::NOT(size_t  qn,
 Name:        toffoli
 Description: toffoli gate,the same as toffoli gate
 Argin:       stControlBit1       first control qubit
-             stControlBit2       the second control qubit
-             stQuantumBit        target qubit
-             errorRate           the errorrate of the gate
-             stQuantumBitNumber  quantum bit number
+stControlBit2       the second control qubit
+stQuantumBit        target qubit
+errorRate           the errorrate of the gate
+stQuantumBitNumber  quantum bit number
 Argout:      None
 return:      quantum error
 *****************************************************************************************************************/
 QError GPUQuantumGates::toffoli(size_t stControlBit1,
-                                size_t stControlBit2,
-                                size_t stQuantumBit,
-                                double errorRate,
-                                int    stQuantumBitNumber)
+    size_t stControlBit2,
+    size_t stQuantumBit,
+    double errorRate,
+    int    stQuantumBitNumber)
 {
     GATEGPU::pToffoli pToffoli = (GATEGPU::pToffoli)dllFun(mGPUDll, "toffoli");
 

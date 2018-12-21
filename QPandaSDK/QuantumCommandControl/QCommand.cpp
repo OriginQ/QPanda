@@ -31,16 +31,15 @@ Description: quantum system command
 #include <fstream>
 #include <Windows.h>
 #include <vector>
-#include "../QuantumCloudHTTP/VirtualQCHttp.h"
-#include "../include/TinyXML/tinystr.h"
-#include "../include/TinyXML/tinyxml.h"
-#include "../QuantumInstructionHandle/QError.h"
+#include "QuantumCloudHTTP/VirtualQCHttp.h"
+#include "TinyXML/tinystr.h"
+#include "TinyXML/tinyxml.h"
+#include "QuantumInstructionHandle/QError.h"
 #include "QSqlist.h"
-
+#include <regex>
 using namespace std;
 using namespace QPanda;
 
-QPROGCLASS * _G_pParserProg = nullptr;
 string  sDBPath = "./ConfigFile/Cloud.db";
 
 /*****************************************************************************************************************
@@ -126,38 +125,44 @@ bool QCommandLoadFile::action(stringstream & ssAction,QPROGCLASS * pParserProg)
     {
         return false;
     }
-
-    if (nullptr !=_G_pParserProg)
+    string sAction(ssAction.str());
+    regex  pattern("(( )(.+))");
+    smatch results;
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
+    if (regex_search(start, end, results, pattern))
     {
-        delete(_G_pParserProg);
-        _G_pParserProg = nullptr;
-    }
-
-    string sTemp;
-    string sFilePath;
-    while (getline(ssAction, sTemp, ' '))
-    {
-        auto aiter = mFunction.find(sTemp);
-        if (mFunction.end() != aiter)
+        string sTemp(results[1].str());
+        sTemp.erase(0,sTemp.find_first_not_of(" "));
+        if (2 == loadFileAPI((char *)(sTemp.c_str())))
         {
-            if (aiter->second)
-            {
-                aiter->second();
-            }
-            return false;
+            return true;
         }
-        sFilePath.append(sTemp.c_str());
     }
-
-    _G_pParserProg = new QPandaAPI();
-    //pParserProg = mpParserProg;
-    int iQnum = 0;
-    if (qErrorNone != _G_pParserProg->loadfile(sFilePath,iQnum))
-    {
-        return false;
-    }
-    return true;
+    return false;
 }
+
+
+void QCommandRun::regexAction(string & sAction, const string & action)
+{
+    stringstream ssAction;
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
+    ssAction << "(" << action << ")" << "{1}";
+    string sRegex(ssAction.str());
+    regex pattern(sRegex);
+    smatch result;
+    if (regex_search(start, end, result, pattern))
+    {
+        string sTemp(result[1].str());
+        auto aiter = mFunction.find(action);
+        if (aiter != mFunction.end())
+        {
+            aiter->second();
+        }
+    }
+}
+
 
 /*****************************************************************************************************************
 Name:        QCommandRun:action
@@ -168,117 +173,126 @@ return:      true or false
 *****************************************************************************************************************/
 bool QCommandRun::action(stringstream & ssAction,QPROGCLASS * pParserProg)
 {
-    /*
-    if ((NULL == _G_modeDLL)||())
-    {
-        return false;
-    }
-    */
-
     mbIsHelp          = false;
     miCalculationUnit = CPU;
-    string sTemp;
+    miRepeat = 0;
+    string sAction(ssAction.str());
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
 
-    vector<string> vsCommand;
-    while (getline(ssAction, sTemp, ' '))
+    regex iRepeatPattern("(-n( )(.*)){1}");
+    smatch iRepeatResult;
+    if (regex_search(start, end, iRepeatResult, iRepeatPattern))
     {
-        vsCommand.push_back(sTemp);
-    }
-
-    for (size_t i = 0; i < vsCommand.size(); i++)
-    {
-        auto aiter = mFunction.find(vsCommand[i]);
-        if (mFunction.end() == aiter)
+        string sTemp(iRepeatResult[1].str());
+        string::const_iterator start = sTemp.begin();
+        string::const_iterator end = sTemp.end();
+        regex pattern("((( )(.*))|(( )(.*)( ))){1}");
+        smatch result;
+        if (regex_search(start, end, result, pattern))
         {
-            cout << "command error" << endl;
-            return false;
-        }
-        if (aiter->first == "-n")
-        {
-            if (i+1 >= vsCommand.size())
-            {
-                return false;
-            }
-            int iRepeat = 0;
-            try
-            {
-                iRepeat = atoi(vsCommand[++i].c_str());
-            }
-            catch (const std::exception& e)
-            {
-                cout << e.what() << endl;
-                return false;
-            }
-            aiter->second(iRepeat);
+            miRepeat = atoi(result[1].str().c_str());
         }
         else
         {
-            aiter->second(0);
+            cout << "repeat error" << endl;
+            return false;
         }
-
+    }
+    else
+    {
+        regex pattern("(-n){1}");
+        smatch result;
+        if (regex_search(start, end, result, pattern))
+        {
+            miRepeat = 0;
+        }
+        else
+        {
+            miRepeat = 1;
+        }
     }
 
+    for ( auto aiter : mFunction)
+    {
+        regexAction(sAction, aiter.first);
+    }
+    
     if (mbIsHelp)
     {
         return false;
     }
 
-    if (nullptr == _G_pParserProg)
-    {
-        return false;
-    }
-
-    if (qErrorNone != _G_pParserProg->setComputeUnit(miCalculationUnit))
+    if (qErrorNone != setComputeUnitAPI(miCalculationUnit))
     {
         return false;
     }
 
     if (miRepeat <= 0)
     {
-        miRepeat = 1;
+        cout << "repeat error" << endl;
+        return false;
     }
 
-    if (qErrorNone != _G_pParserProg->run(miRepeat))
+    if (2 != runAPI(miRepeat))
     {
         return false;
     }
     /*
      *  get result
      */
+    char * pcTempBuf = nullptr;
+    int iResultLength = 0;
 
-    if (qErrorNone != _G_pParserProg->getResult())
-    {
-        return false;
-    }
-    string sResult(_G_pParserProg->msResult);
+    getResultAPI(pcTempBuf,&iResultLength);
+
+    char * pcResult = new char[iResultLength+1];
+    memset(pcResult, 0, iResultLength + 1);
+
+    getResultAPI(pcResult, &iResultLength);
+    string sResult(pcResult);
     cout << sResult << endl;
+
+
+    int iFileNameLength = 0;
+
+    getResultAPI(pcTempBuf, &iFileNameLength);
+
+    char * pcFileName = new char[iFileNameLength + 1];
+    memset(pcFileName, 0, iFileNameLength + 1);
+
+    getFileNameAPI(pcFileName, &iFileNameLength);
+    string sFileName(pcFileName);
 
     /*
      *  Save Results
      */
     if (mbIsO)
     {
-        saveMeasure(sResult,_G_pParserProg->msFileName);
+        saveMeasure(sResult, sFileName);
     }
 
     /*
-     *  Save QState Results
+     *  Save QStat Results
      */
     if ((!mbIsF) && (!mbIsFB))
     {
+        delete [] pcResult;
         return true;
     }
 
-    
-    if (qErrorNone != _G_pParserProg->getQuantumState())
-    {
-        return false;
-    }
+    int iQStatLength = 0;
 
-    string sQState(_G_pParserProg->msState);
+    getQuantumStateAPI(pcTempBuf, &iQStatLength);
+
+    char * pcQStat = new char[iQStatLength+1];
+    memset(pcQStat, 0, iQStatLength + 1);
+    getQuantumStateAPI(pcQStat, &iQStatLength);
+    string sQStat(pcQStat);
+    cout << sQStat << endl;
     if (mbIsF)
     {
-        saveQstate(sQState,_G_pParserProg->msFileName);
+        saveQstate(sQStat,sFileName);
     }
 
     /*
@@ -286,13 +300,20 @@ bool QCommandRun::action(stringstream & ssAction,QPROGCLASS * pParserProg)
      */
     if (mbIsFB)
     {
-        saveQstateBinary(sQState,_G_pParserProg->msFileName);
+        saveQstateBinary(sQStat, sFileName);
     }
 
+
+    delete [] pcQStat;
+    delete [] pcResult;
+    delete[]pcFileName;
+
+    mbIsF = false;
+    mbIsFB = false;
     return true;
 }
 
-int IntegerToBinary(int number, stringstream &ssRet, int ret_len)
+int IntegerToBinary(size_t number, stringstream &ssRet, size_t ret_len)
 {
     unsigned int index;
     int i = 0;
@@ -474,12 +495,6 @@ return:      true or false
 *****************************************************************************************************************/
 bool QCommandExit::action(stringstream & ssAction,QPROGCLASS * pParserProg)
 {
-    /*
-    if (NULL == _G_modeDLL)
-    {
-        return true;
-    }
-    */
     string sTemp;
     while (getline(ssAction, sTemp, ' '))
     {
@@ -494,7 +509,6 @@ bool QCommandExit::action(stringstream & ssAction,QPROGCLASS * pParserProg)
         }
     }
 
-    delete(_G_pParserProg);
     //FreeLibrary(_G_modeDLL);
     return true;
 }
@@ -563,6 +577,7 @@ bool QCommandCheckCUDA::action(stringstream & ssAction,QPROGCLASS * pParserProg)
     return true;
 }
 
+
 /*****************************************************************************************************************
 Name:        QCommandSubmit:actiom
 Description: Comannd action
@@ -576,52 +591,85 @@ bool QCommandSubmit::action(stringstream & ssAction, VirtualQCHttp * mpVirQCHttp
     {
         return true;
     }
-
-    string sTemp;
+    miRepeat = 0;
+    mbIsHelp = false;
     string sFilePath;
-    vector<string> vsCommand;
+    string sAction(ssAction.str());
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
 
-    while (getline(ssAction, sTemp, ' '))
+    regex helpPattern("(-help){1}");
+    smatch helpResult;
+    if (regex_search(start, end, helpResult, helpPattern))
     {
-        vsCommand.push_back(sTemp);
-    }
-
-    if ((vsCommand.size() <2)||(vsCommand.size()>3))
-    {
-        cout << "command fail" << endl;
-        return false;
-    }
-
-    int i;
-    int iRepeat = 1;
-    for (i =0 ; i < vsCommand.size(); i++)
-    {
-        if (vsCommand[i]=="-n")
-        {
-            iRepeat = atoi(vsCommand[i + 1].c_str());
-            auto atier = mFunction.find(vsCommand[i]);
-            atier->second(iRepeat);
-            break;
-        }
+        mbIsHelp = true;
     }
 
     if (mbIsHelp)
     {
+        description();
         return true;
     }
 
-    if (miRepeat == 0)
+    regex iRepeatPattern("(-n( )(.*)){1}");
+    smatch iRepeatResult;
+    if (regex_search(start, end, iRepeatResult, iRepeatPattern))
     {
-        return true;
+        string sTemp(iRepeatResult[1].str());
+        string::const_iterator start = sTemp.begin();
+        string::const_iterator end = sTemp.end();
+        regex pattern("((( )(.*))|(( )(.*)( ))){1}");
+        smatch result;
+        if (regex_search(start, end, result, pattern))
+        {
+            miRepeat = atoi(result[1].str().c_str());
+            
+        }
+        else
+        {
+            cout << "repeat error" << endl;
+            return false;
+        }
+    }
+    else
+    {
+        regex pattern("(-n){1}");
+        smatch result;
+        if (regex_search(start, end, result, pattern))
+        {
+            miRepeat = 0;
+        }
+        else
+        {
+            miRepeat = 1;
+        }
     }
 
-    if (0 == i)
+    if ((miRepeat <= 0)||(miRepeat >9999))
     {
-        sFilePath.append(vsCommand[i+2]);
+        cout << "repeat error" << endl;
+        return false;
     }
-    else if (1 == i)
+
+    regex filePathPattern("((( )(.+)( ))|(( )(.+))){1}");
+    smatch filePathResult;
+    if (regex_search(start, end, filePathResult, filePathPattern))
     {
-        sFilePath.append(vsCommand[i-1]);
+        string sTemp(filePathResult[1].str());
+        string::const_iterator start = sTemp.begin();
+        string::const_iterator end = sTemp.end();
+        regex pattern("-n");
+        smatch result;
+        if (regex_search(start, end, result, pattern))
+        {
+            sFilePath.append(regex_replace(sTemp, pattern, ""));
+        }
+        else
+        {
+            sFilePath.append(sTemp);
+        }
+        sFilePath.erase(0, sFilePath.find_first_not_of(" "));
+        sFilePath.erase(sFilePath.find_last_not_of(" ") + 1);
     }
 
     string sKeyPath = "./ConfigFile/key";
@@ -671,21 +719,22 @@ return:      true or false
 *****************************************************************************************************************/
 bool QCommandTaskList::action(stringstream & ssAction, VirtualQCHttp * mpVirQCHttp)
 {
+    mbIsHelp = false;
 
+    string sAction(ssAction.str());
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
 
-    string sTemp;
-
-    while (getline(ssAction, sTemp, ' '))
+    regex helpPattern("(-help){1}");
+    smatch helpResult;
+    if (regex_search(start, end, helpResult, helpPattern))
     {
-        auto aiter = mFunction.find(sTemp);
-        if (mFunction.end()!= aiter)
-        {
-            aiter->second();
-        }
+        mbIsHelp = true;
     }
 
     if (mbIsHelp)
     {
+        description();
         return true;
     }
 
@@ -716,30 +765,32 @@ bool QCommandGetResult::action(stringstream & ssAction, VirtualQCHttp * mpVirQCH
     {
         return false;
     }
+    mbIsHelp = false;
 
-    string         sTemp;
+    string sAction(ssAction.str());
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
 
-    vector<string> vsCommand;
-
-    while (getline(ssAction, sTemp, ' '))
+    regex helpPattern("(-help){1}");
+    smatch helpResult;
+    if (regex_search(start, end, helpResult, helpPattern))
     {
-        vsCommand.push_back(sTemp);
-    }
-
-    if (vsCommand.size() < 1)
-    {
-        return false;
-    }
-
-    auto aSubIte = mFunction.find(vsCommand[0]);
-    if (aSubIte != mFunction.end())
-    {
-        aSubIte->second();
+        mbIsHelp = true;
     }
 
     if (mbIsHelp)
     {
+        description();
         return true;
+    }
+
+    string taskID;
+    regex  pattern("(( )(.+))");
+    smatch results;
+    if (regex_search(start, end, results, pattern))
+    {
+        taskID.append(results[1].str());
+        taskID.erase(0, taskID.find_first_not_of(" "));
     }
 
     if (nullptr == mpVirQCHttp)
@@ -755,7 +806,7 @@ bool QCommandGetResult::action(stringstream & ssAction, VirtualQCHttp * mpVirQCH
     }
 
     string sQResult;
-    if (!mpVirQCHttp->requsetQProgramResult(vsCommand[0], sQResult))
+    if (!mpVirQCHttp->requsetQProgramResult(taskID, sQResult))
     {
         cout << "no result" << endl;
         return false;
@@ -764,7 +815,7 @@ bool QCommandGetResult::action(stringstream & ssAction, VirtualQCHttp * mpVirQCH
     cout << sQResult << endl;
 
     stringstream ssSQL;
-    ssSQL << "update CloudTask set TaskSta = 3 where TaskID = "<<vsCommand[0]<<';';
+    ssSQL << "update CloudTask set TaskSta = 3 where TaskID = "<< taskID <<';';
     char *  cpError = nullptr;
 
     QSqlite::QSQLite * pSql = QSqlite::QSQLite::getIntance(sDBPath);

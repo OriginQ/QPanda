@@ -14,33 +14,33 @@ Description:instruction class
 
 
 /*****************************************************************************************************************
-  Instruction:the parent of instruction class
+Instruction:the parent of instruction class
 *****************************************************************************************************************/
 class Instruction
 {
 public:
-    Instruction(){};
-    ~Instruction(){};
+    Instruction() {};
+    ~Instruction() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    virtual bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate) = 0;
+    virtual bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate) = 0;
 
 public:
     int mType;                                                          /* instruction type                     */
 };
 
 /*****************************************************************************************************************
-  Hadamard:Hadamard instruction
+Hadamard:Hadamard instruction
 *****************************************************************************************************************/
-class Hadamard:public Instruction
+class Hadamard :public Instruction
 {
 public:
     inline Hadamard()
@@ -53,17 +53,17 @@ public:
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 
 };
 
 /*****************************************************************************************************************
-  RX:RX instruction
+RX:RX instruction
 *****************************************************************************************************************/
 class RX : public Instruction
 {
@@ -78,16 +78,16 @@ public:
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
-  RY:RY instruction
+RY:RY instruction
 *****************************************************************************************************************/
 class RY : public Instruction
 {
@@ -102,16 +102,16 @@ public:
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
-  RZ:RZ instruction
+RZ:RZ instruction
 *****************************************************************************************************************/
 class RZ : public Instruction
 {
@@ -120,18 +120,18 @@ public:
     {
         mType = RZ_GATE;                                                /* set instruction type                 */
     }
-    ~RZ(){};
+    ~RZ() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -144,18 +144,18 @@ public:
     {
         mType = CNOT_GATE;                                              /* set instruction type                 */
     }
-    ~CNOT(){};
+    ~CNOT() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -168,18 +168,18 @@ public:
     {
         mType = NOT_GATE;                                               /* set instruction type                 */
     }
-    ~NOT(){};
+    ~NOT() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -192,22 +192,22 @@ public:
     {
         mType = TOFFOLI_GATE;                                           /* set instruction type                 */
     }
-    ~TOFFOLI(){};
+    ~TOFFOLI() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
-  CR:CR instruction
+CR:CR instruction
 *****************************************************************************************************************/
 class CR : public Instruction
 {
@@ -216,22 +216,22 @@ public:
     {
         mType = CR_GATE;                                                /* set instruction type                 */
     }
-    ~CR(){};
+    ~CR() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
-  iSWAP:iSWAP instruction
+iSWAP:iSWAP instruction
 *****************************************************************************************************************/
 class iSWAP : public Instruction
 {
@@ -240,18 +240,18 @@ public:
     {
         mType = ISWAP_GATE;                                             /* set instruction type                 */
     }
-    ~iSWAP(){};
+    ~iSWAP() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -264,18 +264,18 @@ public:
     {
         mType = SQISWAP_GATE;                                           /* set instruction type                 */
     }
-    ~sqiSWAP(){};
+    ~sqiSWAP() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -288,18 +288,18 @@ public:
     {
         mType = -1;
     }
-    ~controlSwap(){};
+    ~controlSwap() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -312,18 +312,18 @@ public:
     {
         mType = MEASURE_GATE;                                           /* set instruction type                 */
     };
-    ~qubitMeasure(){};
+    ~qubitMeasure() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -332,19 +332,19 @@ unitarySingleQubit:unitarySingleQubit instruction
 class unitarySingleQubit : public Instruction
 {
 public:
-    unitarySingleQubit(){};
-    ~unitarySingleQubit(){};
+    unitarySingleQubit() {};
+    ~unitarySingleQubit() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -358,18 +358,18 @@ public:
     {
         mType = END;                                                    /* set instruction type                 */
     }
-    ~endProgram(){};
+    ~endProgram() {};
 
     /*************************************************************************************************************
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -389,12 +389,12 @@ public:
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 /*****************************************************************************************************************
@@ -414,12 +414,12 @@ public:
     Name:        getInstruction
     Description: add instruction to Ring Memory
     Argin:       pQInstructionNode  quantum Instruction node
-                 pQuantumProParam   quantum program param
-                 pQGate             quantum gate pointer
+    pQuantumProParam   quantum program param
+    pQGate             quantum gate pointer
     Argout:      pQuantumProParam   quantum program param
     return:      true or false
     *************************************************************************************************************/
-    bool getInstruction(QNode * pQInstructionNode,QuantumGateParam *pQuantumProParam,QuantumGates * pQGate);
+    bool getInstruction(QNode * pQInstructionNode, QuantumGateParam *pQuantumProParam, QuantumGates * pQGate);
 };
 
 #endif

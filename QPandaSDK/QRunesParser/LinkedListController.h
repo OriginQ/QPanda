@@ -144,7 +144,7 @@ public:
     * class     QList
     * clear all contents in linkedlist
     ***************************************************/
-    API void listClear();
+     void API listClear();
 
     /*************************************************
     * class:    QList
@@ -154,7 +154,7 @@ public:
     * arg       int gateSpecifier, int operand
     * return
     **************************************************/
-    bool gateInsert(int, int);
+    bool API gateInsert(int, int);
 
     /*************************************************
     * class:    QList

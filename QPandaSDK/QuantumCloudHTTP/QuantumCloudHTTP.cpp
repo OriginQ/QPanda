@@ -24,9 +24,11 @@ Date:2017-02-01
 Description: quantum cloud http
 *****************************************************************************************************************/
 #include <sstream>
+#include <fstream>
+#include <string>
 #include "QuantumCloudHTTP.h"
-#include "../include/Python/Python.h" 
 
+#include <algorithm>
 using std::string;
 using std::ifstream;
 using std::stringstream;
@@ -46,13 +48,62 @@ using namespace Json;
                                 return false; \
                             }
 
-QuantumCloudHTTP::QuantumCloudHTTP(std::string & sKeyFilePath):msKeyFilePath(sKeyFilePath)
+QuantumCloudHTTP::QuantumCloudHTTP(std::string & sKeyFilePath) : 
+    msKeyFilePath(sKeyFilePath),
+    mpv(nullptr),
+    mpDict(nullptr),
+    mpModule(nullptr)
 {
     Py_Initialize();
+    ifstream fin;
+    string temp;
+    fin.open("./ConfigFile/HTTPFile", std::ios::in);
+    int i = 0;
+    while (std::getline(fin, temp, '\n'))
+    {
+        switch (i)
+        {
+        case 0 :
+            msComputeAPI = temp;
+            break;
+        case 1:
+            msInqureAPI = temp;
+            break;
+        case 2:
+            msTerminateAPI = temp;
+        default:
+            break;
+        }
+        i++;
+    }
+
+    string      sPyPath("../include");
+    string      sDirCmd = string("sys.path.append(\"") + sPyPath + "\")";
+    const char *pcDirCmd = sDirCmd.c_str();
+
+
+    PyRun_SimpleString("import  sys"); // Ö´ÐÐ python ÖÐµÄ¶ÌÓï¾ä  
+    PyRun_SimpleString("print('come in python')");
+    PyRun_SimpleString("sys.path.append('./')");
+
+
+    mpModule = PyImport_ImportModule("https");
+    if (!mpModule)
+    {
+        PyErr_Print();
+        std::cout << "can not find https.py" << std::endl;
+        return ;
+    }
+    else
+        std::cout << "open Module" << std::endl;
+    mpDict = PyModule_GetDict(mpModule);
+    mpv = PyDict_GetItemString(mpDict, "requestHttps");
 }
 
 QuantumCloudHTTP::~QuantumCloudHTTP()
 {
+    Py_DECREF(mpDict);
+    Py_DECREF(mpModule);
     Py_Finalize();
 }
 /*****************************************************************************************************************
@@ -77,7 +128,7 @@ bool QuantumCloudHTTP::requestQProgram(std::string  sFilePath,
     ifstream     fin;
     stringstream sscontent;
     string       sJson;
-    string       sUrl(COMPUTEAPI);
+    string       sUrl(msComputeAPI);
         
     int          iTaskType = 0;
     int          iQum;
@@ -102,12 +153,13 @@ bool QuantumCloudHTTP::requestQProgram(std::string  sFilePath,
     fin.close();
 
     vJson["qprog"] = Json::Value(sscontent.str());
-
+    stringstream ssRepeat;
+    ssRepeat << iRepeat;
     switch (iTaskType)
     {
     case 2:
         vJson["typ"] = Json::Value("mcpr");
-        vJson["repeat"] = Json::Value(iRepeat);
+        vJson["repeat"] = Json::Value(ssRepeat.str());
         break;
     case 3:
         vJson["typ"] = Json::Value("smapr");
@@ -145,7 +197,7 @@ bool QuantumCloudHTTP::requsetQProgramResult(const std::string &sTaskID, std::st
         return false;
     }
 
-    string sUrl(INQUREAPI);
+    string sUrl(msInqureAPI);
     string sJson;
     string sTaskSta;
     int    iTaskSta;
@@ -157,14 +209,23 @@ bool QuantumCloudHTTP::requsetQProgramResult(const std::string &sTaskID, std::st
     vJson["taskTyp"] = Json::Value("mcpr");
     vJson["token"] = Json::Value(msAPIKey);
     vJson["typ"] = Json::Value("qrytask");
+    std::cout << sTaskID << std::endl;
     vJson["taskid"] = Json::Value(sTaskID.c_str());
    
     sJson = vJson.toStyledString();
-   
-    GET_RESPONSE
+    
+    try
+    {
+        GET_RESPONSE
+    }
+    catch (const std::exception&e)
+    {
+        std::cout << e.what() << std::endl;
+        return false;
+    }
+
 
     sTaskSta = root["obj"]["tasksta"].asString();
-
     iTaskSta = atoi(sTaskSta.c_str());
 
     if (iTaskSta == 3)
@@ -174,26 +235,21 @@ bool QuantumCloudHTTP::requsetQProgramResult(const std::string &sTaskID, std::st
         stringstream ssTaskRS;
 
         ssTaskRS << root["obj"]["taskrs"].asString();
-        
         rTaskRS.parse(ssTaskRS, vTaskRS);
-       
         if (vTaskRS["key"].isArray())
         {
             int i        = 0;
             int iRsArray = vTaskRS["key"].size();
-
             stringstream ssTemp;
 
             for (;i<iRsArray;i++)
             {
-                ssTemp << vTaskRS["key"][i].asString()<< " " << vTaskRS["value"][i] .asString()<< '\n';
+                ssTemp << vTaskRS["key"][i].asCString()<< " : " << vTaskRS["value"][i];
             }
             sQResult.append(ssTemp.str());
         }
-
         return true;
     }
-
     return false;
 }
 
@@ -212,7 +268,7 @@ bool QuantumCloudHTTP::stopQProgram(std::string sTaskID)
     }
 
     string sJson;
-    string sUrl(TERMINATEAPI);
+    string sUrl(msTerminateAPI);
 
     Value  vJson;
     Value  root; 
@@ -227,7 +283,15 @@ bool QuantumCloudHTTP::stopQProgram(std::string sTaskID)
    
     sJson = vJson.toStyledString();
 
-    GET_RESPONSE
+    try
+    {
+        GET_RESPONSE
+    }
+    catch (const std::exception&e)
+    {
+        std::cout << e.what() << std::endl;
+        return false;
+    }
 
     iTaskSta = root["obj"]["tasksta"].asInt();
 
@@ -379,40 +443,34 @@ return:      true or false
 *****************************************************************************************************************/
 bool QuantumCloudHTTP::requestHttps(const string &sUrl,string & sJson,Value &root)
 {
-    string      sPyPath("../include");
-    string      sDirCmd  = string("sys.path.append(\"") + sPyPath + "\")";
-    const char *pcDirCmd = sDirCmd.c_str();
 
-    PyRun_SimpleString("import sys");
-    PyRun_SimpleString(pcDirCmd);
 
-    PyObject* moduleName = PyString_FromString("https"); 
-    PyObject* pModule    = PyImport_Import(moduleName);
-
-    if (!pModule) 
+    try
     {
+
+
+        PyObject* pArgs = Py_BuildValue("ss", sUrl.c_str(), sJson.c_str());
+        if (nullptr == mpv)
+        {
+            return false;
+        }
+        PyObject* pRet = PyObject_CallObject(mpv, pArgs);
+        PyErr_Print();
+        if (!pRet)
+        {
+            return false;
+        }
+        char *  ssRet;
+        int a = 0;
+        PyArg_ParseTuple(pRet, "si", &ssRet, &a);
+        Reader rJson;
+        return rJson.parse(ssRet, root);
+    }
+    catch (const std::exception&e)
+    {
+        std::cout << "hahahha"<< std::endl;
+        std::cout << e.what() << std::endl;
         return false;
     }
 
-    PyObject* pv = PyObject_GetAttrString(pModule, "requestHttps");
-
-    if (!pv || !PyCallable_Check(pv))  
-    {
-        return false;
-    }
-
-    PyObject* pArgs = Py_BuildValue("ss",sUrl.c_str(),sJson.c_str());
-    
-    PyObject* pRet  = PyObject_CallObject(pv, pArgs);
-
-    if (!pRet)
-    {
-        return false;
-    }
-
-    stringstream ssRet;
-    ssRet<< PyString_AsString(pRet);
-    
-    Reader rJson;
-    return rJson.parse(ssRet, root);
 }

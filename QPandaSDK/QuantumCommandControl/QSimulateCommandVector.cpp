@@ -24,7 +24,8 @@ Date:2017-11-23
 Description: quantum system command vector
 *****************************************************************************************************************/
 #include "QSimulateCommandVector.h"
-
+#include <regex>
+using namespace std;
 
 /*****************************************************************************************************************
 Name:        QCommandVector
@@ -44,10 +45,8 @@ QSimulateCommandVector::QSimulateCommandVector()
     QCommand * pMemory     = new QCommandMemory();
     QCommand * pCheckCUDA  = new QCommandCheckCUDA();
 
-    mCommandMap.insert(QCPAIR("mode", pSelectMode));
     mCommandMap.insert(QCPAIR("load", pLoadFile));
     mCommandMap.insert(QCPAIR("run", pRun));
-    mCommandMap.insert(QCPAIR("exit", pExit));
     mCommandMap.insert(QCPAIR("memory", pMemory));
     mCommandMap.insert(QCPAIR("checkCUDA", pCheckCUDA));
 }
@@ -76,19 +75,26 @@ return:      true or false
 *************************************************************************************************************/
 bool QSimulateCommandVector::commandAction(stringstream & ssAction)
 {
-    string sTemp;
+
     if (ssAction.str().empty())
     {
         return false;
     }
-
-    getline(ssAction,sTemp, ' ');
-    
-    auto aiter = mCommandMap.find(sTemp);
-    if (aiter != mCommandMap.end())
+    string sAction(ssAction.str());
+    regex  pattern("(\\w+( )|(\\w+)){1}");
+    smatch results;
+    string::const_iterator start = sAction.begin();
+    string::const_iterator end = sAction.end();
+    if (regex_search(start,end,results, pattern))
     {
-        return aiter->second->action(ssAction,this ->mpParserProg);
-    }
+        string sTemp(results[1].str());
+        sTemp.erase(sTemp.find_last_not_of(" ") + 1);
+        auto aiter = mCommandMap.find(sTemp);
+        if (aiter != mCommandMap.end())
+        {
+            return aiter->second->action(ssAction, this->mpParserProg);
+        }
+    } 
 
     cout << "error command" << endl;
     return false;

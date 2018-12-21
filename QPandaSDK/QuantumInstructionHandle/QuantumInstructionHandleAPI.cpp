@@ -24,7 +24,7 @@ Date:2017-11-21
 Description:get quantum instruction
 *****************************************************************************************************************/
 #include "QuantumInstructionHandleAPI.h"
-#include "X86QuantumGates.h"
+#include "CPUQuantumGates.h"
 #include "GPUQuantumGates.h"
 #include "QuantumGateParameter.h"
 
@@ -76,11 +76,17 @@ bool QuantumInstructionHandleAPI::transmit(QList &qInstructionList,QuantumGatePa
 
     QuantumInstructionGet *pQuantumInstructionGet = QuantumInstructionGet::getInstance();
 
-    if (NULL == mpQGate)
+    if (nullptr == mpQGate)
     {
         return false;
     }
 
+    if (0 == mpQGate->getQStateSize())
+    {
+        return false;
+    }
+
+    
     int  iNumber = 0;
 
     bool bResult = false;
@@ -132,11 +138,14 @@ return:      true or false
 *****************************************************************************************************************/
 bool QuantumInstructionHandleAPI::initState(QuantumGateParam *pQuantumProParam)
 {
-    if (0 == pQuantumProParam->mQuantumBitNumber)
+    if (0 >= pQuantumProParam->mQuantumBitNumber)
     {
         return false;
     }
     
+    if (nullptr == mpQGate)
+        return false;
+
     if (qErrorNone == mpQGate->initState(pQuantumProParam))
     {
         return true;
@@ -154,7 +163,7 @@ return:      true or false
 *****************************************************************************************************************/
 bool QuantumInstructionHandleAPI::destroyState(QuantumGateParam *pQuantumProParam)
 {
-    if (nullptr == mpQGate)
+    if ((nullptr == mpQGate)||(nullptr == pQuantumProParam))
     {
         return true;
     }
@@ -170,6 +179,8 @@ bool QuantumInstructionHandleAPI::destroyState(QuantumGateParam *pQuantumProPara
 
 bool QuantumInstructionHandleAPI::getState(string & sState,QuantumGateParam *pQuantumProParam)
 {
+    if ((nullptr == mpQGate) || (nullptr == pQuantumProParam))
+        return false;
     return mpQGate->getQState(sState, pQuantumProParam);
 }
 
@@ -190,10 +201,10 @@ bool QuantumInstructionHandleAPI::setComputeUnit(int iCalculationUnitType)
 
     if (CPU == iCalculationUnitType)
     {
-        mpQGate = new X86QuantumGates;
+        mpQGate = new CPUQuantumGates;
         if (nullptr == mpQGate)
         {
-            cout << "new X86QuantumGates fail" << endl;
+            cout << "new CPUQuantumGates fail" << endl;
             return false;
         }
     }
@@ -203,11 +214,15 @@ bool QuantumInstructionHandleAPI::setComputeUnit(int iCalculationUnitType)
         {
             mpQGate = new GPUQuantumGates;
         }
-        catch (const std::exception&e)
+        catch (const std::exception&)
         {
             cout << "new GPUQuantumGates fail" << endl;
             return false;
         }
+    }
+    else
+    {
+        return false;
     }
     
     return true;

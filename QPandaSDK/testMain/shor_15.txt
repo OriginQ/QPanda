@@ -1,0 +1,5 @@
+QINIT 7
+CREG 3
+H 0
+RX 2,"pi"
+MEASURE 0,$0

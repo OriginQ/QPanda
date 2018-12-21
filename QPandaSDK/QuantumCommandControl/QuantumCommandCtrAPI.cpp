@@ -90,18 +90,8 @@ return:      true or false
 *****************************************************************************************************************/
 bool exitCommand()
 {
-    stringstream sExit;
-    sExit << "exit";
-
-    if (!_G_pCommandVector->commandAction(sExit))
-    {
-        return false;
-    }
-
     deleteCommandVector(); 
-
     exit(0);
-
 }
 
 /*****************************************************************************************************************
@@ -121,7 +111,7 @@ bool commandAction(stringstream & ssAction)
     if (0 == strcmp(ssAction.str().c_str(), "help"))
     {
         _G_pCommandVector->commandDescription();
-
+        return true;
     }
     else if (0 == strcmp(ssAction.str().c_str(), "exit"))
     {

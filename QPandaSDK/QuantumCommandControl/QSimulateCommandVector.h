@@ -4,7 +4,6 @@ Author:Dou Menghan
 Date:2017-11-23
 Description: quantum system command vector 
 *********************************************************************************************************/
-#pragma once
 
 #include "QCommand.h"
 #include <vector>
@@ -56,7 +55,7 @@ public:
 
 private:
     map<string,QCommand *>        mCommandMap;
-    QPanda::QPandaAPI   *mpParserProg;
+    QPanda::QPandaSDK   *mpParserProg;
 
 };
 

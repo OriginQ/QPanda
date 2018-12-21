@@ -12,7 +12,8 @@ enum QError
     setComputeUnitError,
     runProgramError,
     getResultError,
-    getQStateError
+    getQStateError,
+    notReadFileError
 };
 
 #endif

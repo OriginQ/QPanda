@@ -9,13 +9,16 @@ Description: quantum cloud http
  
 #include <iostream>
 #include <fstream>
-#include "../include/json/json.h"
-#include "../include/json/json-forwards.h"
-#pragma comment(lib,"../lib/lib_json.lib") 
+#include "json/json.h"
+#include "json/forwards.h"
 #include "VirtualQCHttp.h"
-
+#include "python.h" 
 class QuantumCloudHTTP:public VirtualQCHttp
 {
+private:
+    PyObject * mpv = nullptr;
+    PyObject * mpDict = nullptr;
+    PyObject * mpModule = nullptr;
 public:
     QuantumCloudHTTP(std::string &sKeyFilePath);
     ~QuantumCloudHTTP();
@@ -61,6 +64,9 @@ private:
      
     std::string msAPIKey;
     std::string msKeyFilePath;
+    std::string msComputeAPI;
+    std::string msInqureAPI;
+    std::string msTerminateAPI;
     /*************************************************************************************************************
     Name:        getQnumAndTaksType
     Description: get quantum bit and task type
