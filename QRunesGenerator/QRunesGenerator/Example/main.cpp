@@ -29,7 +29,7 @@ using namespace std;
 void kernel();
 void MAJ(qubit& a, qubit& b, qubit&c);
 void MAJ(qRefList a, qRefList b, qubit& in);
-//void classtoQu(qRefList a, int C);
+
 int main()
 {
 	runQKernel(kernel);
@@ -86,16 +86,7 @@ void kernel()
         c.push_back(&a[i]);
     }
     vector<double> b(16, 0.125);
-    /*
-    for (int i = 0; i < 8; i++)
-    {
-        b[i] = 0.02;
-    }
-    for (int i = 8; i < 14; i++)
-    {
-        b[i] = 0.1;
-    }
-    */
+
     b[0] = 0.118;
     b[1] = 0.24;
     b[2] = 0.31;
@@ -113,46 +104,7 @@ void kernel()
     b[14] = 0.0005;
     b[15] = 0.0001;
     quantumredpacketnew(c, b);
-   // Measure(a[2]);
 }
-/*
-    qVec a(14);
-    //qubit b;
-   // qubit tem;
-    qRefList c, d;
-    for (size_t i = 0; i < 7; i++)
-    {
-        c.push_back(&a[i]);
-    }
-    for (size_t i = 7; i < 14; i++)
-    {
-        d.push_back(&a[i]);
-    }
-    for (int i = 0; i < 10; i++)
-    {
-      //  cout << "i\t" << modreverse(1<<i, 913) << endl;
-    }
-    //modmul_913_49(c, d, 913);
-    //constModExp(c,d,4, 77);
-   // constantModMul(c, 49, 913);
-    //constadder(c, 34);
-   // adder(c,d);
-    classtoQu(c, 63);
-    classtoQu(d, 76);
-    //adder(c, d);
-    modhalf(c, 91);
-    //constadder(c, 23);
-   // modsub(c, d, 91);
-    //isCarry(c, d, tem);
-   // adder(c, d, tem);
-    //constadder(c, d, 23);
-    //qft(c);
-   // qftreverse(c);
-    for (size_t i = 0; i < 5; i++)
-    {
-      //  Measure(a[i]);
-    }
-}
-*/
+
 
 
