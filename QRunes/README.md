@@ -228,6 +228,12 @@ PMEASURE 2,3,6,7
 ```
 
 ## 附录-量子逻辑门矩阵形式
+$$
+\begin{bmatrix}
+1/\sqrt {2} & 1/\sqrt {2}\\
+1/\sqrt {2} & -1/\sqrt {2}\\
+\end{bmatrix}
+$$
 
 \begin{bmatrix} 1/\sqrt {2} & 1/\sqrt {2}  &  1/\sqrt {2} & -1/\sqrt {2} \end{bmatrix}
 
