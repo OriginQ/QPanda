@@ -228,6 +228,55 @@ PMEASURE 2,3,6,7
 ```
 
 ## 附录-量子逻辑门矩阵形式
+
+.. |H| image:: images/H.svg
+   :width: 70px
+   :height: 70px
+
+.. |X| image:: images/X.svg
+   :width: 70px
+   :height: 70px
+
+.. |Y| image:: images/Y.svg
+   :width: 70px
+   :height: 70px
+   
+.. |Z| image:: images/Z.svg
+   :width: 70px
+   :height: 70px
+
+.. |NOT| image:: images/not.svg
+   :width: 70px
+   :height: 70px
+
+.. |RX| image:: images/Xθ.svg
+   :width: 70px
+   :height: 70px
+
+.. |RY| image:: images/Yθ.svg
+   :width: 70px
+   :height: 70px
+
+.. |RZ| image:: images/Zθ.svg
+   :width: 70px
+   :height: 70px
+
+.. |CNOT| image:: images/+.svg
+   :width: 70px
+   :height: 70px
+
+.. |CR| image:: images/CR.svg
+   :width: 70px
+   :height: 70px
+
+.. |iSWAP| image:: images/切换.svg
+   :width: 70px
+   :height: 70px
+
+.. |Toffoli| image:: images/Toff.svg
+   :width: 70px
+   :height: 70px
+   
 ================================================================================================ =======================         ============================================================================================================================
 |H|                                                                                                 ``Hadamard``                        .. math:: \begin{bmatrix} 1/\sqrt {2} & 1/\sqrt {2} \\ 1/\sqrt {2} & -1/\sqrt {2} \end{bmatrix}\quad
 |X|                                                                                                 ``Pauli-X``                         .. math:: \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\quad
