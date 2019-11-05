@@ -228,6 +228,9 @@ PMEASURE 2,3,6,7
 ```
 
 ## 附录-量子逻辑门矩阵形式
+
+\left[\begin{matrix} 1/\sqrt {2} & 1/\sqrt {2} \\ 1/\sqrt {2} & -1/\sqrt {2} \end{matrix}\right]
+
 =======================         ============================================================================================================================
    ``Hadamard``                        \left[ \begin{matrix} 1/\sqrt {2} & 1/\sqrt {2} \\ 1/\sqrt {2} & -1/\sqrt {2} \end{matrix}\ right]
    ``Pauli-X``                         \left[ \begin{matrix} 0 & 1 \\ 1 & 0 \end{matrix} \right]
