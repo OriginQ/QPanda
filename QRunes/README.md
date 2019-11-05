@@ -228,66 +228,18 @@ PMEASURE 2,3,6,7
 ```
 
 ## 附录-量子逻辑门矩阵形式
+=======================         ============================================================================================================================
+   ``Hadamard``                        \left[ \begin{matrix} 1/\sqrt {2} & 1/\sqrt {2} \\ 1/\sqrt {2} & -1/\sqrt {2} \end{matrix}\ right]
+   ``Pauli-X``                         \left[ \begin{matrix} 0 & 1 \\ 1 & 0 \end{matrix} \right]
+   ``Pauli-Y``                         \left[ \begin{matrix} 0 & -i \\ i & 0 \end{matrix} \right]
+   ``Pauli-Z``                         \left[ \begin{matrix} 1 & 0 \\ 0 & -1 \end{matrix} \right]
+   ``NOT``                             \left[ \begin{matrix} 0 & 1 \\ 1 & 0 \end{matrix} \right]
+   ``RX``                              \left[ \begin{matrix} \cos(θ/2) & -1i×\sin(θ/2) \\ -1i×\sin(θ/2) & \cos(θ/2) \end{matrix} \right]
+   ``RY``                              \left[ \begin{matrix} \cos(θ/2) & \sin(θ/2) \\ \sin(θ/2) & \cos(θ/2) \end{matrix} \right]
+   ``RZ``                              \left[ \begin{matrix} \exp(-iθ/2) & 0 \\ 0 & \exp(iθ/2) \end{matrix} \right]
+   ``CNOT``                            \left[ \begin{matrix} 1 & 0 & 0 & 0  \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{matrix} \right]
+   ``CR``                              \left[ \begin{matrix} 1 & 0 & 0 & 0  \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & \exp(iθ) \end{matrix} \right]
+   ``iSWAP``                           \left[ \begin{matrix} 1 & 0 & 0 & 0  \\ 0 & 0 & -i & 0 \\ 0 & -i & 0 & 0 \\ 0 & 0 & 0 & 1 \end{matrix} \right]
+   ``Toffoli``                         \left[ \begin{matrix} 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0  \\ 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1  \\ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\ \end{matrix} \right]
+=======================         ============================================================================================================================
 
-.. |H| image:: images/H.svg
-   :width: 70px
-   :height: 70px
-
-.. |X| image:: images/X.svg
-   :width: 70px
-   :height: 70px
-
-.. |Y| image:: images/Y.svg
-   :width: 70px
-   :height: 70px
-   
-.. |Z| image:: images/Z.svg
-   :width: 70px
-   :height: 70px
-
-.. |NOT| image:: images/not.svg
-   :width: 70px
-   :height: 70px
-
-.. |RX| image:: images/Xθ.svg
-   :width: 70px
-   :height: 70px
-
-.. |RY| image:: images/Yθ.svg
-   :width: 70px
-   :height: 70px
-
-.. |RZ| image:: images/Zθ.svg
-   :width: 70px
-   :height: 70px
-
-.. |CNOT| image:: images/+.svg
-   :width: 70px
-   :height: 70px
-
-.. |CR| image:: images/CR.svg
-   :width: 70px
-   :height: 70px
-
-.. |iSWAP| image:: images/切换.svg
-   :width: 70px
-   :height: 70px
-
-.. |Toffoli| image:: images/Toff.svg
-   :width: 70px
-   :height: 70px
-   
-================================================================================================ =======================         ============================================================================================================================
-|H|                                                                                                 ``Hadamard``                        .. math:: \begin{bmatrix} 1/\sqrt {2} & 1/\sqrt {2} \\ 1/\sqrt {2} & -1/\sqrt {2} \end{bmatrix}\quad
-|X|                                                                                                 ``Pauli-X``                         .. math:: \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\quad
-|Y|                                                                                                 ``Pauli-Y``                         .. math:: \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}\quad
-|Z|                                                                                                 ``Pauli-Z``                         .. math:: \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\quad
-|NOT|                                                                                               ``NOT``                             .. math:: \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\quad
-|RX|                                                                                                ``RX``                              .. math:: \begin{bmatrix} \cos(θ/2) & -1i×\sin(θ/2) \\ -1i×\sin(θ/2) & \cos(θ/2) \end{bmatrix}\quad
-|RY|                                                                                                ``RY``                              .. math:: \begin{bmatrix} \cos(θ/2) & \sin(θ/2) \\ \sin(θ/2) & \cos(θ/2) \end{bmatrix}\quad
-|RZ|                                                                                                ``RZ``                              .. math:: \begin{bmatrix} \exp(-iθ/2) & 0 \\ 0 & \exp(iθ/2) \end{bmatrix}\quad
-|CNOT|                                                                                              ``CNOT``                            .. math:: \begin{bmatrix} 1 & 0 & 0 & 0  \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}\quad
-|CR|                                                                                                ``CR``                              .. math:: \begin{bmatrix} 1 & 0 & 0 & 0  \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & \exp(iθ) \end{bmatrix}\quad
-|iSWAP|                                                                                             ``iSWAP``                           .. math:: \begin{bmatrix} 1 & 0 & 0 & 0  \\ 0 & 0 & -i & 0 \\ 0 & -i & 0 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}\quad
-|Toffoli|                                                                                           ``Toffoli``                         .. math:: \begin{bmatrix} 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0  \\ 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1  \\ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\ \end{bmatrix}\quad
-================================================================================================ =======================         ============================================================================================================================
