@@ -226,32 +226,3 @@ MEASURE 3,$0
 PMEASURE 2,3,6,7
 %计算2,3,6,7号量子比特构成的16个态的概率，即2,3,6,7号量子比特处于态|0000>,|0001>……|1111>的概率。
 ```
-
-## 附录-量子逻辑门矩阵形式
-
-![](http://latex.codecogs.com/gif.latex?\begin{bmatrix} 1/\sqrt {2} & 1/\sqrt {2} & 1/\sqrt {2} & -1/\sqrt {2} \end{bmatrix})
-
-$$
-\begin{bmatrix}
-1/\sqrt {2} & 1/\sqrt {2}\\
-1/\sqrt {2} & -1/\sqrt {2}\\
-\end{bmatrix}
-$$
-
-\begin{bmatrix} 1/\sqrt {2} & 1/\sqrt {2} & 1/\sqrt {2} & -1/\sqrt {2} \end{bmatrix}
-
-=======================         ============================================================================================================================
-   ``Hadamard``                        \left[ \begin{matrix} 1/\sqrt {2} & 1/\sqrt {2} \\ 1/\sqrt {2} & -1/\sqrt {2} \end{matrix}\ right]
-   ``Pauli-X``                         \left[ \begin{matrix} 0 & 1 \\ 1 & 0 \end{matrix} \right]
-   ``Pauli-Y``                         \left[ \begin{matrix} 0 & -i \\ i & 0 \end{matrix} \right]
-   ``Pauli-Z``                         \left[ \begin{matrix} 1 & 0 \\ 0 & -1 \end{matrix} \right]
-   ``NOT``                             \left[ \begin{matrix} 0 & 1 \\ 1 & 0 \end{matrix} \right]
-   ``RX``                              \left[ \begin{matrix} \cos(θ/2) & -1i×\sin(θ/2) \\ -1i×\sin(θ/2) & \cos(θ/2) \end{matrix} \right]
-   ``RY``                              \left[ \begin{matrix} \cos(θ/2) & \sin(θ/2) \\ \sin(θ/2) & \cos(θ/2) \end{matrix} \right]
-   ``RZ``                              \left[ \begin{matrix} \exp(-iθ/2) & 0 \\ 0 & \exp(iθ/2) \end{matrix} \right]
-   ``CNOT``                            \left[ \begin{matrix} 1 & 0 & 0 & 0  \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{matrix} \right]
-   ``CR``                              \left[ \begin{matrix} 1 & 0 & 0 & 0  \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & \exp(iθ) \end{matrix} \right]
-   ``iSWAP``                           \left[ \begin{matrix} 1 & 0 & 0 & 0  \\ 0 & 0 & -i & 0 \\ 0 & -i & 0 & 0 \\ 0 & 0 & 0 & 1 \end{matrix} \right]
-   ``Toffoli``                         \left[ \begin{matrix} 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0  \\ 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1  \\ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\ \end{matrix} \right]
-=======================         ============================================================================================================================
-
